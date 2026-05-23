@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TEKNAL · Tasas & Macro — Mayo 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root{--bg:#06090c;--surf:#0b0f14;--card:#0d1318;--border:#182028;--cyan:#00d4f5;--green:#2ecc71;--red:#e74c3c;--amber:#f39c12;--purple:#a78bfa;--text:#d8e8f0;--muted:#3d5060;--muted2:#5a7080}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,212,245,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,245,0.02) 1px,transparent 1px);background-size:32px 32px;pointer-events:none;z-index:0}
+header{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:14px 28px;border-bottom:1px solid var(--border);background:rgba(6,9,12,0.98)}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:5px;color:var(--cyan);text-shadow:0 0 18px rgba(0,212,245,0.3)}
+.logo span{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:400;color:var(--muted2);letter-spacing:2px;margin-left:10px}
+.hright{display:flex;align-items:center;gap:20px}
+.live{display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;color:#2ecc71;text-transform:uppercase}
+.ldot{width:6px;height:6px;border-radius:50%;background:#2ecc71;box-shadow:0 0 8px #2ecc71;animation:blink 2s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+.ts{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted2);letter-spacing:1px}
+.intro{position:relative;z-index:5;display:flex;align-items:flex-end;justify-content:space-between;gap:32px;padding:24px 28px 20px;border-bottom:1px solid var(--border);background:rgba(11,15,20,0.8)}
+.intro-eyebrow{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--cyan);text-transform:uppercase;margin-bottom:7px}
+.intro-title{font-family:'Bebas Neue',sans-serif;font-size:38px;letter-spacing:1px;line-height:1;color:var(--text)}
+.intro-title span{color:var(--cyan)}
+.intro-sub{font-size:12px;color:#4a6878;line-height:1.65;margin-top:8px;max-width:640px}
+.intro-right{flex-shrink:0;text-align:right}
+.intro-tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:4px 12px;border:1px solid rgba(0,212,245,.3);color:var(--cyan);background:rgba(0,212,245,.05);margin-bottom:8px}
+.intro-meta{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted2);letter-spacing:1.5px;text-transform:uppercase;line-height:1.9}
+.ticker{position:relative;z-index:5;display:flex;align-items:center;border-bottom:1px solid var(--border);background:rgba(11,15,20,0.95);overflow:hidden;height:34px}
+.tlabel{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--amber);background:rgba(243,156,18,.08);border-right:1px solid var(--border);padding:0 14px;height:100%;display:flex;align-items:center;white-space:nowrap;flex-shrink:0}
+.tscroll{display:flex;gap:44px;animation:scroll 35s linear infinite;white-space:nowrap;padding:0 20px}
+@keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.ti{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted2)}
+.ti b{color:var(--text);font-weight:500}
+.kpi-row{position:relative;z-index:5;display:grid;grid-template-columns:repeat(7,1fr);border-bottom:1px solid var(--border)}
+.kpi{padding:14px 16px;border-right:1px solid var(--border)}
+.kpi:last-child{border-right:none}
+.kpi-lbl{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted2);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:5px}
+.kpi-val{font-family:'Bebas Neue',sans-serif;font-size:30px;line-height:1;color:var(--text)}
+.kpi-val.c{color:var(--cyan)}.kpi-val.g{color:var(--green)}.kpi-val.r{color:var(--red)}.kpi-val.a{color:var(--amber)}
+.kpi-delta{font-family:'JetBrains Mono',monospace;font-size:9px;margin-top:3px;letter-spacing:.5px}
+.kpi-delta.up{color:var(--green)}.kpi-delta.dn{color:var(--red)}.kpi-delta.neu{color:var(--muted2)}
+main{position:relative;z-index:5;padding:18px 28px}
+.slbl{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:2.5px;color:var(--muted2);text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.slbl::after{content:'';flex:1;height:1px;background:var(--border)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:8px}
+.card{background:var(--card);border:1px solid var(--border);padding:16px 18px;position:relative;overflow:hidden;animation:rise .45s ease both;transition:border-color .2s}
+.card:hover{border-color:rgba(0,212,245,.4)}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.card:nth-child(1){animation-delay:.04s}.card:nth-child(2){animation-delay:.08s}.card:nth-child(3){animation-delay:.12s}.card:nth-child(4){animation-delay:.16s}.card:nth-child(5){animation-delay:.20s}.card:nth-child(6){animation-delay:.24s}
+.card-title{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--muted2);text-transform:uppercase;margin-bottom:12px}
+.chart-wrap{position:relative;width:100%}
+.comp-table{width:100%;border-collapse:collapse;font-size:11px}
+.comp-table th{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:1.5px;color:var(--muted2);text-transform:uppercase;padding:0 0 8px;text-align:right;font-weight:400}
+.comp-table th:first-child{text-align:left}
+.comp-table td{padding:6px 0;border-top:1px solid var(--border);text-align:right;color:var(--text)}
+.comp-table td:first-child{text-align:left;color:var(--muted2);font-size:11px}
+.val-up{color:var(--green);font-family:'JetBrains Mono',monospace;font-size:10px}
+.val-dn{color:var(--red);font-family:'JetBrains Mono',monospace;font-size:10px}
+.val-neu{color:var(--muted2);font-family:'JetBrains Mono',monospace;font-size:10px}
+.highlight{font-weight:500;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:11px}
+.row-main td{color:var(--cyan) !important}
+.alert{border-left:2px solid var(--amber);background:rgba(243,156,18,.05);padding:10px 14px;margin-top:10px;font-size:11px;line-height:1.6;color:#5a7080}
+.alert strong{color:var(--amber);font-weight:500}
+.gauge-row{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+.gauge-item{display:flex;flex-direction:column;gap:3px}
+.gauge-header{display:flex;justify-content:space-between;align-items:center}
+.gauge-name{font-size:11px;color:var(--text)}
+.gauge-val{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--cyan)}
+.gauge-bar{height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.gauge-fill{height:100%;border-radius:2px}
+.tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;padding:2px 8px;border-radius:2px;margin-bottom:8px}
+.t-a{background:rgba(243,156,18,.1);color:var(--amber);border:1px solid rgba(243,156,18,.25)}
+.t-r{background:rgba(231,76,60,.1);color:var(--red);border:1px solid rgba(231,76,60,.25)}
+.t-g{background:rgba(46,204,113,.1);color:var(--green);border:1px solid rgba(46,204,113,.25)}
+.t-c{background:rgba(0,212,245,.1);color:var(--cyan);border:1px solid rgba(0,212,245,.25)}
+.t-p{background:rgba(167,139,250,.1);color:var(--purple);border:1px solid rgba(167,139,250,.25)}
+footer{position:relative;z-index:5;display:flex;justify-content:space-between;align-items:center;padding:12px 28px;margin-top:4px;border-top:1px solid var(--border);background:rgba(6,9,12,.98)}
+footer span{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted2);letter-spacing:1px}
+</style>
+</head>
+<body>
+
+<header>
+  <span class="logo">TEKNAL<span>· FINANZAS & MACRO</span></span>
+  <div class="hright">
+    <div class="live"><div class="ldot"></div>DATOS EN TIEMPO REAL</div>
+    <div class="ts" id="ts"></div>
+  </div>
+</header>
+
+<div class="intro">
+  <div>
+    <div class="intro-eyebrow">◆ Reunión de directorio · Indicadores macroeconómicos</div>
+    <div class="intro-title">TASAS DE INTERÉS<br>& <span>MACRO ARGENTINA</span></div>
+    <div class="intro-sub">Las tasas en Argentina alcanzaron el nivel más bajo en años. Con inflación desacelerando al 2,6% mensual en abril y el BCRA en el piso del corredor monetario, el escenario presenta oportunidades y riesgos clave para el negocio fintech de Teknal. Comparativa mayo 2025 vs mayo 2026.</div>
+  </div>
+  <div class="intro-right">
+    <div class="intro-tag">Teknal · Directorio 2026</div>
+    <div class="intro-meta">Reunión ordinaria<br>Jueves 21 de mayo, 2026<br>Datos: BCRA · INDEC · Infobae</div>
+  </div>
+</div>
+
+<div class="ticker">
+  <div class="tlabel">◆ FLASH MACRO</div>
+  <div class="tscroll">
+    <div class="ti">◆ <b>Dólar oficial</b> $1.420 · Blue $1.430 · Brecha 0,7%</div>
+    <div class="ti">◆ <b>Riesgo país</b> 524 pb · sube 28 unidades semanal</div>
+    <div class="ti">◆ <b>Inflación abril</b> 2,6% mensual · Acumulado 2026: 9,4%</div>
+    <div class="ti">◆ <b>Tasa TAMAR</b> 22,81% TNA · Caución operando debajo de 20% TNA</div>
+    <div class="ti">◆ <b>Treasury 10Y EE.UU.</b> 4,61% · Mercado descarta recortes Fed en 2026</div>
+    <div class="ti">◆ <b>Fitch mejoró</b> calificación de Argentina · Moody's y S&P aún pendientes</div>
+    <div class="ti">◆ <b>Dólar oficial</b> $1.420 · Blue $1.430 · Brecha 0,7%</div>
+    <div class="ti">◆ <b>Riesgo país</b> 524 pb · sube 28 unidades semanal</div>
+    <div class="ti">◆ <b>Inflación abril</b> 2,6% mensual · Acumulado 2026: 9,4%</div>
+    <div class="ti">◆ <b>Tasa TAMAR</b> 22,81% TNA · Caución operando debajo de 20% TNA</div>
+    <div class="ti">◆ <b>Treasury 10Y EE.UU.</b> 4,61% · Mercado descarta recortes Fed en 2026</div>
+    <div class="ti">◆ <b>Fitch mejoró</b> calificación de Argentina · Moody's y S&P aún pendientes</div>
+  </div>
+</div>
+
+<div class="kpi-row">
+  <div class="kpi"><div class="kpi-lbl">TNA Plazo Fijo (top)</div><div class="kpi-val c">19,5%</div><div class="kpi-delta dn">▼ vs 39% may-2025</div></div>
+  <div class="kpi"><div class="kpi-lbl">Inflación mensual (abr)</div><div class="kpi-val g">2,6%</div><div class="kpi-delta up">▼ vs 8,8% abr-2025</div></div>
+  <div class="kpi"><div class="kpi-lbl">Dólar Oficial</div><div class="kpi-val a">$1.420</div><div class="kpi-delta neu">◆ vs $950 may-2025</div></div>
+  <div class="kpi"><div class="kpi-lbl">Riesgo País (EMBI)</div><div class="kpi-val r">524</div><div class="kpi-delta dn">▲ vs 496 sem. ant.</div></div>
+  <div class="kpi"><div class="kpi-lbl">FED Funds Rate</div><div class="kpi-val">4,25%</div><div class="kpi-delta neu">◆ Sin cambios 2026</div></div>
+  <div class="kpi"><div class="kpi-lbl">Tasa TAMAR</div><div class="kpi-val c">22,8%</div><div class="kpi-delta dn">▼ vs 40%+ may-2025</div></div>
+  <div class="kpi" style="border-right:none;border-left:2px solid var(--amber)"><div class="kpi-lbl">ARCA Resarcitoria</div><div class="kpi-val a">~33%</div><div class="kpi-delta dn">anual · vs ~48% mar-jun 2025</div></div>
+</div>
+
+<main>
+
+  <div class="slbl">Tasas de interés · Comparativa mayo 2025 vs mayo 2026</div>
+  <div class="g2">
+    <div class="card">
+      <div class="card-title">Tasas TNA por banco — May 2025 vs May 2026</div>
+      <div class="chart-wrap" style="height:220px">
+        <canvas id="chartBancos" role="img" aria-label="Comparativa TNA por banco 2025 vs 2026">Banco Nación: 17.5% (2026) vs 34% (2025).</canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Inflación mensual IPC — Ene 2025 a Abr 2026</div>
+      <div class="chart-wrap" style="height:220px">
+        <canvas id="chartInflacion" role="img" aria-label="Evolución inflación mensual 2025-2026">IPC mensual cayó de 2.4% en ene 2025 a 2.6% en abr 2026.</canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="g3">
+    <div class="card">
+      <div class="card-title">Comparativa tasas TNA — Bancos principales</div>
+      <table class="comp-table">
+        <thead><tr><th>Entidad</th><th>May 2025</th><th>May 2026</th><th>Variación</th></tr></thead>
+        <tbody>
+          <tr class="row-main"><td>Bco. Nación</td><td class="highlight">34%</td><td class="highlight">17,5%</td><td class="val-dn">▼ −16,5pp</td></tr>
+          <tr><td>Bco. Provincia</td><td class="highlight">39%</td><td class="highlight">19,5%</td><td class="val-dn">▼ −19,5pp</td></tr>
+          <tr><td>BBVA</td><td class="highlight">40%</td><td class="highlight">18,75%</td><td class="val-dn">▼ −21,3pp</td></tr>
+          <tr><td>Galicia</td><td class="highlight">37%</td><td class="highlight">16,25%</td><td class="val-dn">▼ −20,8pp</td></tr>
+          <tr><td>Macro</td><td class="highlight">42%</td><td class="highlight">18%</td><td class="val-dn">▼ −24pp</td></tr>
+          <tr><td>Santander</td><td class="highlight">37%</td><td class="highlight">15%</td><td class="val-dn">▼ −22pp</td></tr>
+          <tr><td>Digitales (top)</td><td class="highlight">45%</td><td class="highlight">25,5%</td><td class="val-dn">▼ −19,5pp</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Tipo de cambio · Comparativa</div>
+      <table class="comp-table">
+        <thead><tr><th>Cotización</th><th>May 2025</th><th>May 2026</th><th>Var %</th></tr></thead>
+        <tbody>
+          <tr><td>Oficial</td><td class="highlight">$950</td><td class="highlight">$1.420</td><td class="val-dn">+49,5%</td></tr>
+          <tr><td>Blue</td><td class="highlight">$1.100</td><td class="highlight">$1.430</td><td class="val-dn">+30%</td></tr>
+          <tr><td>MEP</td><td class="highlight">$1.080</td><td class="highlight">$1.430</td><td class="val-dn">+32,4%</td></tr>
+          <tr><td>CCL</td><td class="highlight">$1.095</td><td class="highlight">$1.486</td><td class="val-dn">+35,7%</td></tr>
+          <tr><td>Tarjeta</td><td class="highlight">$1.235</td><td class="highlight">$1.846</td><td class="val-dn">+49,5%</td></tr>
+          <tr class="row-main"><td>Brecha B/O</td><td class="highlight">~15%</td><td class="highlight">0,7%</td><td class="val-up">▼ Comprimió</td></tr>
+        </tbody>
+      </table>
+      <div class="alert"><strong>Proyección REM dic 2026:</strong> Mediana analistas ubica dólar oficial en $1.676. Top 10 estima $1.611.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Tasa real mensual vs Inflación</div>
+      <div class="chart-wrap" style="height:140px;margin-bottom:10px">
+        <canvas id="chartReal" role="img" aria-label="Tasa plazo fijo mensual vs inflación mensual">Tasa PF mensual 1.5%, inflación 2.6%. Tasa real negativa.</canvas>
+      </div>
+      <div class="alert"><strong>Tasa real negativa:</strong> El plazo fijo rinde ~1,5% mensual mientras inflación fue 2,6% en abril. El ahorrista pierde poder adquisitivo en pesos.</div>
+    </div>
+  </div>
+
+  <div class="slbl" style="margin-top:14px">Contexto global · FED · Riesgo país · ARCA · Fintechs</div>
+  <div class="g4" style="grid-template-columns:repeat(5,1fr)">
+
+    <div class="card">
+      <div class="card-title">FED — Referencia global</div>
+      <div class="tag t-c">Estados Unidos</div>
+      <table class="comp-table">
+        <thead><tr><th>Referencia</th><th>Valor</th></tr></thead>
+        <tbody>
+          <tr><td>FED Rate may-25</td><td class="highlight">4,25–4,5%</td></tr>
+          <tr class="row-main"><td>FED Rate may-26</td><td class="highlight">4,25%</td></tr>
+          <tr><td>Treasury 10Y</td><td class="highlight">4,61%</td></tr>
+          <tr><td>Recortes 2026</td><td class="val-dn">Sin cambios</td></tr>
+        </tbody>
+      </table>
+      <div style="margin-top:10px;font-size:11px;color:var(--muted2);line-height:1.6">Mercado descarta recortes este año. Cada suba del Treasury encarece la deuda emergente argentina en USD.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Riesgo País Argentina</div>
+      <div class="tag t-r">EMBI+ Argentina</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:44px;color:var(--red);line-height:1;margin-bottom:4px">524 <span style="font-size:16px;color:var(--muted2)">pb</span></div>
+      <table class="comp-table">
+        <tbody>
+          <tr><td>Sem. anterior</td><td class="highlight">~496 pb</td><td class="val-dn">▲ +28 pb</td></tr>
+          <tr><td>May 2025</td><td class="highlight">~900 pb</td><td class="val-up">▼ −376 pb</td></tr>
+          <tr><td>Fitch</td><td colspan="2" class="val-up">Mejoró calificación</td></tr>
+          <tr><td>Moody's / S&P</td><td colspan="2" class="val-neu">Pendiente</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Inflación acumulada 2026</div>
+      <div class="tag t-g">IPC Argentina</div>
+      <table class="comp-table">
+        <thead><tr><th>Mes</th><th>Mensual</th><th>Acumulado</th></tr></thead>
+        <tbody>
+          <tr><td>Ene 2026</td><td class="highlight">2,4%</td><td class="highlight">2,4%</td></tr>
+          <tr><td>Feb 2026</td><td class="highlight">2,4%</td><td class="highlight">4,8%</td></tr>
+          <tr><td>Mar 2026</td><td class="highlight">3,4%</td><td class="highlight">8,4%</td></tr>
+          <tr class="row-main"><td>Abr 2026</td><td class="highlight">2,6%</td><td class="highlight">9,4%</td></tr>
+          <tr><td>Proy. may-26</td><td class="highlight">2,3%</td><td class="val-neu">estimado</td></tr>
+          <tr><td>Proy. dic-26</td><td class="highlight">~1,8%</td><td class="highlight">~30%</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card" style="border-top:2px solid var(--amber)">
+      <div class="card-title">ARCA · Tasas de interés fiscal</div>
+      <div class="tag t-a">Ex AFIP · Comparativa histórica</div>
+      <table class="comp-table">
+        <thead><tr><th>Período</th><th>Mensual</th><th>Anual ~</th></tr></thead>
+        <tbody>
+          <tr><td>2024 (pico)</td><td class="val-dn">7,47%</td><td class="val-dn">~89%</td></tr>
+          <tr><td>Mar–Jun 2025</td><td class="highlight">4,00%</td><td class="highlight">~48%</td></tr>
+          <tr class="row-main"><td>Jul 2025–hoy</td><td class="highlight">2,75%</td><td class="highlight" style="color:var(--cyan)">~33%</td></tr>
+          <tr><td>Punitoria vigente</td><td class="highlight">3,50%</td><td class="highlight">~42%</td></tr>
+          <tr><td>USD resarcitoria</td><td class="highlight">0,83%</td><td class="highlight">~10%</td></tr>
+        </tbody>
+      </table>
+      <div class="alert"><strong>Financiamiento (Mis Facilidades):</strong> 50% de resarcitoria = <strong style="color:var(--cyan)">~1,37% mensual / ~16,4% anual</strong>. Hasta 60 cuotas. Condonación 100% adhiriendo antes del 16/06/2026.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Tasas fintechs vs bancos trad.</div>
+      <div class="tag t-p">Sector Fintech</div>
+      <div class="gauge-row">
+        <div class="gauge-item">
+          <div class="gauge-header"><span class="gauge-name">Mercado Pago</span><span class="gauge-val">25,5%</span></div>
+          <div class="gauge-bar"><div class="gauge-fill" style="width:88%;background:var(--purple)"></div></div>
+        </div>
+        <div class="gauge-item">
+          <div class="gauge-header"><span class="gauge-name">Ualá / Naranja X</span><span class="gauge-val">24%</span></div>
+          <div class="gauge-bar"><div class="gauge-fill" style="width:82%;background:var(--cyan)"></div></div>
+        </div>
+        <div class="gauge-item">
+          <div class="gauge-header"><span class="gauge-name">Bco. Provincia</span><span class="gauge-val">19,5%</span></div>
+          <div class="gauge-bar"><div class="gauge-fill" style="width:67%;background:var(--green)"></div></div>
+        </div>
+        <div class="gauge-item">
+          <div class="gauge-header"><span class="gauge-name">BBVA / Macro</span><span class="gauge-val">18,7%</span></div>
+          <div class="gauge-bar"><div class="gauge-fill" style="width:64%;background:var(--amber)"></div></div>
+        </div>
+        <div class="gauge-item">
+          <div class="gauge-header"><span class="gauge-name">Bco. Nación</span><span class="gauge-val">17,5%</span></div>
+          <div class="gauge-bar"><div class="gauge-fill" style="width:60%;background:var(--muted2)"></div></div>
+        </div>
+        <div class="gauge-item">
+          <div class="gauge-header"><span class="gauge-name">Santander</span><span class="gauge-val">15%</span></div>
+          <div class="gauge-bar"><div class="gauge-fill" style="width:51%;background:var(--red)"></div></div>
+        </div>
+      </div>
+      <div style="margin-top:10px;font-size:10px;color:var(--muted2)">Fintechs lideran con 6pp sobre bancos. Ventaja competitiva clave para Teknal.</div>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <span>TEKNAL BOARD INTELLIGENCE · MAYO 2026</span>
+  <span>FUENTES: BCRA · INDEC · INFOBAE · EL CRONISTA · BANCO PROVINCIA · REM</span>
+</footer>
+
+<script>
+const now = new Date();
+document.getElementById('ts').textContent =
+  now.toLocaleDateString('es-MX',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).toUpperCase();
+
+Chart.defaults.color = '#3d5060';
+Chart.defaults.borderColor = '#182028';
+Chart.defaults.font.family = "'JetBrains Mono', monospace";
+Chart.defaults.font.size = 10;
+
+new Chart(document.getElementById('chartBancos'),{
+  type:'bar',
+  data:{
+    labels:['Nación','Provincia','BBVA','Galicia','Macro','Santander'],
+    datasets:[
+      {label:'May 2025 TNA%',data:[34,39,40,37,42,37],backgroundColor:'rgba(231,76,60,0.2)',borderColor:'rgba(231,76,60,0.7)',borderWidth:1},
+      {label:'May 2026 TNA%',data:[17.5,19.5,18.75,16.25,18,15],backgroundColor:'rgba(0,212,245,0.2)',borderColor:'rgba(0,212,245,0.8)',borderWidth:1}
+    ]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{backgroundColor:'#0d1318',borderColor:'#182028',borderWidth:1}},
+    scales:{
+      x:{grid:{color:'#182028'},ticks:{color:'#3d5060'}},
+      y:{grid:{color:'#182028'},ticks:{color:'#3d5060',callback:v=>v+'%'},max:50}
+    }
+  }
+});
+
+new Chart(document.getElementById('chartInflacion'),{
+  type:'line',
+  data:{
+    labels:['Ene 25','Feb 25','Mar 25','Abr 25','May 25','Jun 25','Jul 25','Ago 25','Sep 25','Oct 25','Nov 25','Dic 25','Ene 26','Feb 26','Mar 26','Abr 26'],
+    datasets:[{
+      label:'IPC mensual %',
+      data:[2.4,2.4,3.7,8.8,3.3,1.6,2.7,4.2,3.5,2.9,2.4,2.7,2.4,2.4,3.4,2.6],
+      borderColor:'#2ecc71',backgroundColor:'rgba(46,204,113,0.07)',
+      borderWidth:2,fill:true,tension:0.35,
+      pointBackgroundColor:'#2ecc71',pointRadius:3,pointHoverRadius:5
+    }]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{backgroundColor:'#0d1318',borderColor:'#182028',borderWidth:1,callbacks:{label:ctx=>' '+ctx.parsed.y+'%'}}},
+    scales:{
+      x:{grid:{color:'#182028'},ticks:{color:'#3d5060',maxRotation:45,autoSkip:false}},
+      y:{grid:{color:'#182028'},ticks:{color:'#3d5060',callback:v=>v+'%'}}
+    }
+  }
+});
+
+new Chart(document.getElementById('chartReal'),{
+  type:'bar',
+  data:{
+    labels:['Feb 26','Mar 26','Abr 26'],
+    datasets:[
+      {label:'Tasa PF mensual',data:[1.6,1.6,1.5],backgroundColor:'rgba(0,212,245,0.3)',borderColor:'rgba(0,212,245,0.8)',borderWidth:1},
+      {label:'Inflación mensual',data:[2.4,3.4,2.6],backgroundColor:'rgba(231,76,60,0.3)',borderColor:'rgba(231,76,60,0.8)',borderWidth:1}
+    ]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{backgroundColor:'#0d1318',borderColor:'#182028',borderWidth:1}},
+    scales:{
+      x:{grid:{color:'#182028'},ticks:{color:'#3d5060'}},
+      y:{grid:{color:'#182028'},ticks:{color:'#3d5060',callback:v=>v+'%'},max:4.5}
+    }
+  }
+});
+</script>
+</body>
+</html>

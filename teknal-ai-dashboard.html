@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TEKNAL · IA Pulse — Mayo 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080c10;
+    --surf: #0d1318;
+    --card: #0f1620;
+    --border: #1a2530;
+    --border2: #243040;
+    --cyan: #00d4f5;
+    --pink: #ff3366;
+    --lime: #9ddc3b;
+    --amber: #f5a623;
+    --purple: #a78bfa;
+    --text: #dce8f0;
+    --muted: #4a6070;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    height: 100%;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,245,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,245,0.025) 1px, transparent 1px);
+    background-size: 36px 36px;
+    pointer-events: none; z-index: 0;
+  }
+
+  /* HEADER */
+  header {
+    position: relative; z-index: 10;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 32px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(8,12,16,0.98);
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px; letter-spacing: 5px;
+    color: var(--cyan);
+    text-shadow: 0 0 20px rgba(0,212,245,0.35);
+  }
+  .logo span {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 400;
+    color: var(--muted); letter-spacing: 2px; margin-left: 12px;
+  }
+
+  .header-right { display: flex; align-items: center; gap: 24px; }
+
+  .live-badge {
+    display: flex; align-items: center; gap: 7px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 2px; color: var(--lime); text-transform: uppercase;
+  }
+  .live-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--lime); box-shadow: 0 0 10px var(--lime);
+    animation: blink 2s ease-in-out infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+  .ts {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: var(--muted); letter-spacing: 1px;
+  }
+
+  /* STATS */
+  .stats-row {
+    position: relative; z-index: 5;
+    display: grid; grid-template-columns: repeat(4,1fr);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat {
+    padding: 16px 24px;
+    border-right: 1px solid var(--border);
+  }
+  .stat:last-child { border-right: none; }
+  .stat-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px; line-height: 1; color: var(--cyan);
+  }
+  .stat-lbl {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px; color: var(--muted);
+    letter-spacing: 1.5px; text-transform: uppercase; margin-top: 4px;
+  }
+
+  /* TICKER */
+  .ticker {
+    position: relative; z-index: 5;
+    display: flex; align-items: center;
+    border-bottom: 1px solid var(--border);
+    background: rgba(13,19,24,0.95);
+    overflow: hidden; height: 36px;
+  }
+  .ticker-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px; letter-spacing: 2px; color: var(--cyan);
+    background: rgba(0,212,245,0.08);
+    border-right: 1px solid var(--border);
+    padding: 0 16px; height: 100%;
+    display: flex; align-items: center;
+    white-space: nowrap; flex-shrink: 0;
+  }
+  .ticker-scroll {
+    display: flex; gap: 48px;
+    animation: scroll 32s linear infinite;
+    white-space: nowrap; padding: 0 24px;
+  }
+  @keyframes scroll { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+  .tick {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--muted);
+  }
+  .tick b { color: var(--text); font-weight: 500; }
+
+  /* MAIN */
+  main {
+    position: relative; z-index: 5;
+    padding: 24px 32px;
+    max-width: 1600px; margin: 0 auto;
+  }
+
+  .section-lbl {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px; letter-spacing: 2.5px; color: var(--muted);
+    text-transform: uppercase; margin-bottom: 12px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .section-lbl::after { content:''; flex:1; height:1px; background:var(--border); }
+
+  .grid3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 8px; }
+  .grid4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 20px 22px;
+    position: relative; overflow: hidden;
+    transition: border-color .25s, transform .2s;
+    animation: rise .5s ease both;
+  }
+  @keyframes rise { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+  .card:hover { border-color: rgba(0,212,245,.5); transform: translateY(-3px); }
+  .card::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:2px;
+    background: linear-gradient(90deg,transparent,var(--cyan),transparent);
+    opacity:0; transition:opacity .25s;
+  }
+  .card:hover::before { opacity:1; }
+
+  .card-n {
+    position:absolute; top:10px; right:14px;
+    font-family:'Bebas Neue',sans-serif; font-size:52px;
+    color:rgba(255,255,255,.025); line-height:1; pointer-events:none;
+  }
+
+  .tag {
+    display:inline-block;
+    font-family:'JetBrains Mono',monospace;
+    font-size:8.5px; letter-spacing:1.5px; text-transform:uppercase;
+    padding:3px 9px; margin-bottom:10px; border-radius:2px; font-weight:700;
+  }
+  .t-m { background:rgba(0,212,245,.1); color:var(--cyan); border:1px solid rgba(0,212,245,.25); }
+  .t-p { background:rgba(255,51,102,.1); color:var(--pink); border:1px solid rgba(255,51,102,.25); }
+  .t-r { background:rgba(157,220,59,.1); color:var(--lime); border:1px solid rgba(157,220,59,.25); }
+  .t-i { background:rgba(245,166,35,.1); color:var(--amber); border:1px solid rgba(245,166,35,.25); }
+  .t-g { background:rgba(167,139,250,.1); color:var(--purple); border:1px solid rgba(167,139,250,.25); }
+
+  .card h2 {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:22px; letter-spacing:.5px; line-height:1.15;
+    margin-bottom:8px; color:var(--text);
+  }
+  .card-sm h2 {
+    font-family:'DM Sans',sans-serif;
+    font-size:13.5px; font-weight:500; margin-bottom:6px;
+  }
+  .card p { font-size:12px; line-height:1.65; color:#6080A0; }
+
+  .meta {
+    display:flex; align-items:center; justify-content:space-between;
+    margin-top:12px; padding-top:10px; border-top:1px solid var(--border);
+  }
+  .src {
+    font-family:'JetBrains Mono',monospace;
+    font-size:8.5px; color:var(--muted);
+    letter-spacing:1px; text-transform:uppercase;
+  }
+  .dots { display:flex; gap:4px; }
+  .d { width:6px; height:6px; border-radius:50%; background:var(--border); }
+  .d.a { background:var(--pink); }
+  .d.m { background:var(--amber); }
+  .d.b { background:var(--lime); }
+
+  .card:nth-child(1){animation-delay:.05s}
+  .card:nth-child(2){animation-delay:.10s}
+  .card:nth-child(3){animation-delay:.15s}
+  .card:nth-child(4){animation-delay:.20s}
+  .card:nth-child(5){animation-delay:.25s}
+  .card:nth-child(6){animation-delay:.30s}
+  .card:nth-child(7){animation-delay:.35s}
+  .card:nth-child(8){animation-delay:.40s}
+  .card:nth-child(9){animation-delay:.45s}
+  .card:nth-child(10){animation-delay:.50s}
+
+  /* INTRO */
+  .intro {
+    position: relative; z-index: 5;
+    padding: 28px 32px 24px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(13,19,24,0.7);
+    display: flex; align-items: flex-end; justify-content: space-between; gap: 40px;
+  }
+  .intro-left {}
+  .intro-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px; letter-spacing: 3px; color: var(--cyan);
+    text-transform: uppercase; margin-bottom: 8px;
+  }
+  .intro-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px; letter-spacing: 1px; line-height: 1;
+    color: var(--text);
+  }
+  .intro-title span { color: var(--cyan); }
+  .intro-sub {
+    font-size: 13px; color: #5a7a90; line-height: 1.6;
+    margin-top: 10px; max-width: 680px;
+  }
+  .intro-right {
+    flex-shrink: 0;
+    text-align: right;
+  }
+  .intro-tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+    padding: 5px 14px; border: 1px solid rgba(0,212,245,.3);
+    color: var(--cyan); background: rgba(0,212,245,.06);
+    margin-bottom: 8px;
+  }
+  .intro-meeting {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px; color: var(--muted); letter-spacing: 1.5px;
+    text-transform: uppercase; line-height: 1.8;
+  }
+
+  footer {
+    position:relative; z-index:5;
+    display:flex; justify-content:space-between; align-items:center;
+    padding:14px 32px; margin-top:8px;
+    border-top:1px solid var(--border);
+    background:rgba(8,12,16,.98);
+  }
+  footer span {
+    font-family:'JetBrains Mono',monospace;
+    font-size:9px; color:var(--muted); letter-spacing:1px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <span class="logo">TEKNAL<span>· DIRECTORIO</span></span>
+  </div>
+  <div class="header-right">
+    <div class="live-badge"><div class="live-dot"></div>INTELIGENCIA ARTIFICIAL</div>
+    <div class="ts" id="ts"></div>
+  </div>
+</header>
+
+<div class="stats-row">
+  <div class="stat"><div class="stat-val">$25B</div><div class="stat-lbl">Revenue anual OpenAI</div></div>
+  <div class="stat"><div class="stat-val">$900B</div><div class="stat-lbl">Valuación Anthropic</div></div>
+  <div class="stat"><div class="stat-val">59+</div><div class="stat-lbl">Modelos lanzados en 2026</div></div>
+  <div class="stat"><div class="stat-val">$300B</div><div class="stat-lbl">VC en IA solo en Q1 2026</div></div>
+</div>
+
+<div class="ticker">
+  <div class="ticker-label">◆ FLASH</div>
+  <div class="ticker-scroll">
+    <div class="tick">◆ <b>GPT-5.5</b> es el nuevo modelo por defecto de ChatGPT desde el 5 de mayo</div>
+    <div class="tick">◆ <b>Anthropic</b> alcanzó valuación de $900B · Revenue creció 80× en Q1 2026</div>
+    <div class="tick">◆ <b>Gemini 3.1 Ultra</b> lanzado con ventana de 2 millones de tokens</div>
+    <div class="tick">◆ <b>SpaceX adquirió xAI</b> integrando Grok al ecosistema Musk–Tesla</div>
+    <div class="tick">◆ <b>Casa Blanca</b> planea exigir acceso previo a modelos antes del lanzamiento público</div>
+    <div class="tick">◆ <b>Cerebras IPO</b> en Nasdaq: valuación $26.6B · sube ~90% en debut</div>
+    <div class="tick">◆ <b>EU AI Act</b> · deadlines de agosto 2026 para sistemas de alto riesgo se mantienen</div>
+    <!-- duplicate for seamless loop -->
+    <div class="tick">◆ <b>GPT-5.5</b> es el nuevo modelo por defecto de ChatGPT desde el 5 de mayo</div>
+    <div class="tick">◆ <b>Anthropic</b> alcanzó valuación de $900B · Revenue creció 80× en Q1 2026</div>
+    <div class="tick">◆ <b>Gemini 3.1 Ultra</b> lanzado con ventana de 2 millones de tokens</div>
+    <div class="tick">◆ <b>SpaceX adquirió xAI</b> integrando Grok al ecosistema Musk–Tesla</div>
+    <div class="tick">◆ <b>Casa Blanca</b> planea exigir acceso previo a modelos antes del lanzamiento público</div>
+    <div class="tick">◆ <b>Cerebras IPO</b> en Nasdaq: valuación $26.6B · sube ~90% en debut</div>
+    <div class="tick">◆ <b>EU AI Act</b> · deadlines de agosto 2026 para sistemas de alto riesgo se mantienen</div>
+  </div>
+</div>
+
+<div class="intro">
+  <div class="intro-left">
+    <div class="intro-eyebrow">◆ Resumen ejecutivo · Reunión de directorio</div>
+    <div class="intro-title">PANORAMA <span>INTELIGENCIA ARTIFICIAL</span><br>MAYO 2026</div>
+    <div class="intro-sub">El mercado de IA nunca se movió tan rápido. En los últimos 60 días se lanzaron más de 59 modelos, dos laboratorios superaron valuaciones de $900B y los sistemas agénticos pasaron de experimento a infraestructura crítica. Este reporte sintetiza las actualizaciones más relevantes para la estrategia de Teknal.</div>
+  </div>
+  <div class="intro-right">
+    <div class="intro-tag">Teknal · Directorio 2026</div>
+    <div class="intro-meeting">
+      Reunión ordinaria<br>
+      Jueves 21 de mayo, 2026<br>
+      Preparado con Claude AI
+    </div>
+  </div>
+</div>
+
+<main>
+
+  <div class="section-lbl">Noticias principales</div>
+  <div class="grid3">
+
+    <div class="card">
+      <div class="card-n">01</div>
+      <div class="tag t-m">Modelos</div>
+      <h2>GPT-5.5 ES EL NUEVO ESTÁNDAR MUNDIAL</h2>
+      <p>OpenAI lanzó GPT-5.5 el 23 de abril con grandes avances en codificación agéntica y uso de computadora. El 5 de mayo pasó a ser el modelo por defecto de ChatGPT para cientos de millones de usuarios. Superó 60 en el Intelligence Index, el récord más alto hasta ahora.</p>
+      <div class="meta">
+        <span class="src">OpenAI · Abr–May 2026</span>
+        <div class="dots"><div class="d a"></div><div class="d a"></div><div class="d a"></div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-n">02</div>
+      <div class="tag t-m">Modelos</div>
+      <h2>GEMINI 3.1 ULTRA: 2M TOKENS DE CONTEXTO</h2>
+      <p>Google lanzó Gemini 3.1 Ultra con la ventana de contexto más grande del mercado: 2 millones de tokens, nativo en texto, imagen, audio y video. Gemini 3.1 Flash Lite llegó el 8 de mayo como opción económica para gateways de alto volumen.</p>
+      <div class="meta">
+        <span class="src">Google · May 2026</span>
+        <div class="dots"><div class="d a"></div><div class="d a"></div><div class="d a"></div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-n">03</div>
+      <div class="tag t-i">Industria</div>
+      <h2>IA AGÉNTICA: EL NUEVO MODO DE OPERAR</h2>
+      <p>Los sistemas agénticos que planifican, ejecutan y recuperan errores sin intervención humana son ahora la expectativa por defecto. Standard Chartered elimina miles de roles. Meta reubica 7,000 empleados en equipos de IA. El Model Context Protocol (MCP) se consolida como estándar universal de conectividad.</p>
+      <div class="meta">
+        <span class="src">Múltiples fuentes · May 2026</span>
+        <div class="dots"><div class="d a"></div><div class="d a"></div><div class="d a"></div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="section-lbl" style="margin-top:20px">Modelos · Productos · Investigación</div>
+  <div class="grid3">
+
+    <div class="card">
+      <div class="card-n">04</div>
+      <div class="tag t-m">Modelos</div>
+      <h2>CLAUDE 4.6 HOY · OPUS 4.7 CONFIRMADO</h2>
+      <p>Anthropic lanzó 4 actualizaciones mayores de Claude en ~50 días durante 2026. Claude Sonnet 4.6 está activo hoy. Claude Opus 4.7 está confirmado como próximo lanzamiento, enfocado en razonamiento empresarial. El revenue de Anthropic creció 80× en Q1 respecto al año anterior.</p>
+      <div class="meta">
+        <span class="src">Anthropic · 2026</span>
+        <div class="dots"><div class="d a"></div><div class="d a"></div><div class="d m"></div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-n">05</div>
+      <div class="tag t-r">Investigación</div>
+      <h2>TURBOQUANT: EFICIENCIA SIN ESCALAR PARÁMETROS</h2>
+      <p>Google presentó TurboQuant en ICLR 2026, reduciendo drásticamente el overhead de KV cache con compresión PolarQuant + Johnson-Lindenstrauss. Acelera el giro hacia IA eficiente con alto impacto en costos de data centers y modelos on-device.</p>
+      <div class="meta">
+        <span class="src">Google Research · ICLR 2026</span>
+        <div class="dots"><div class="d a"></div><div class="d m"></div><div class="d"></div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-n">06</div>
+      <div class="tag t-p">Productos</div>
+      <h2>GROK IMAGINE 1.0 Y EL ECOSISTEMA xAI–SPACEX</h2>
+      <p>xAI lanzó Grok Imagine 1.0, plataforma de generación de video. SpaceX adquirió xAI integrando Grok al ecosistema de Musk que incluye Tesla. Grok 4.20, lanzado el 31 de marzo, sigue siendo el flagship vigente del laboratorio.</p>
+      <div class="meta">
+        <span class="src">xAI / SpaceX · 2026</span>
+        <div class="dots"><div class="d a"></div><div class="d m"></div><div class="d"></div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="section-lbl" style="margin-top:20px">Industria · Regulación · Tendencias</div>
+  <div class="grid4">
+
+    <div class="card card-sm">
+      <div class="card-n">07</div>
+      <div class="tag t-g">Regulación</div>
+      <h2>EE.UU. exige acceso previo a modelos de IA</h2>
+      <p>Casa Blanca planea EO con "marco voluntario" para que empresas den acceso anticipado a reguladores antes del lanzamiento. Microsoft y xAI ya acordaron. Mayo marca el fin de "moverse rápido y romper cosas" en IA.</p>
+      <div class="meta">
+        <span class="src">White House · May 2026</span>
+        <div class="dots"><div class="d a"></div><div class="d a"></div><div class="d m"></div></div>
+      </div>
+    </div>
+
+    <div class="card card-sm">
+      <div class="card-n">08</div>
+      <div class="tag t-i">Industria</div>
+      <h2>OpenAI rumbo a IPO con valuación sobre $1T</h2>
+      <p>OpenAI superó $25B en revenue anualizado y planea IPO en Q4 2026. Anthropic también supera $1T en plataformas de trading privado. La carrera entre los dos laboratorios líderes llega a los mercados públicos.</p>
+      <div class="meta">
+        <span class="src">OpenAI · Anthropic · 2026</span>
+        <div class="dots"><div class="d a"></div><div class="d a"></div><div class="d m"></div></div>
+      </div>
+    </div>
+
+    <div class="card card-sm">
+      <div class="card-n">09</div>
+      <div class="tag t-i">Industria</div>
+      <h2>Cerebras IPO: chip alternativo a Nvidia</h2>
+      <p>Cerebras cotizó en Nasdaq con valuación de $26.6B y subió ~90% en su debut. Sus wafer-scale engines compiten con GPUs de Nvidia. Firmó contrato con OpenAI por $20B en compute hasta 2028.</p>
+      <div class="meta">
+        <span class="src">Cerebras / Nasdaq · 2026</span>
+        <div class="dots"><div class="d a"></div><div class="d m"></div><div class="d"></div></div>
+      </div>
+    </div>
+
+    <div class="card card-sm">
+      <div class="card-n">10</div>
+      <div class="tag t-g">Regulación</div>
+      <h2>EU AI Act: plazos de agosto 2026 en pie</h2>
+      <p>Las negociaciones para enmendar el EU AI Act se estancaron. Los plazos de agosto 2026 para sistemas de IA de alto riesgo se mantienen. El Reino Unido también desafía su propio enfoque de mano liviana ante la presión de la industria.</p>
+      <div class="meta">
+        <span class="src">EU / UK · May 2026</span>
+        <div class="dots"><div class="d a"></div><div class="d m"></div><div class="d"></div></div>
+      </div>
+    </div>
+
+  </div>
+
+</main>
+
+<footer>
+  <span>TEKNAL BOARD INTELLIGENCE · MAYO 2026</span>
+  <span id="gen">GENERADO CON CLAUDE AI</span>
+</footer>
+
+<script>
+  const now = new Date();
+  document.getElementById('ts').textContent =
+    now.toLocaleDateString('es-MX', { weekday:'long', day:'numeric', month:'long', year:'numeric' }).toUpperCase();
+  document.getElementById('gen').textContent =
+    'GENERADO CON CLAUDE AI · ' + now.toLocaleTimeString('es-MX', { hour:'2-digit', minute:'2-digit' });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carreras en Auge · Panorama Global 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@300;400;500&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root {
+  --bg: #f5f2ed;
+  --ink: #1a1714;
+  --card: #ffffff;
+  --muted: #7a7167;
+  --border: #ddd8d0;
+  --border2: #c8c2b8;
+  --accent-tech: #1a3a8f;
+  --accent-health: #1a6b3a;
+  --accent-finance: #8f4e1a;
+  --accent-green: #1a6b55;
+  --accent-creative: #5c1a8f;
+  --accent-red: #8f1a1a;
+  --highlight: #f0e840;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Archivo', sans-serif;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+/* ── HEADER ── */
+header {
+  border-bottom: 2px solid var(--ink);
+  padding: 20px 40px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  background: var(--bg);
+}
+
+.masthead {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+}
+
+.masthead-title {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 13px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.masthead-sep { color: var(--border2); font-size: 18px; }
+
+.masthead-sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.live-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--accent-health);
+  text-transform: uppercase;
+  border: 1px solid var(--accent-health);
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.live-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--accent-health);
+  animation: blink 2s ease-in-out infinite;
+}
+
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
+
+.date-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 1px;
+}
+
+/* ── HERO ── */
+.hero {
+  border-bottom: 1px solid var(--border);
+  padding: 40px 40px 32px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 40px;
+  align-items: end;
+  background: var(--bg);
+}
+
+.hero-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hero-eyebrow::before {
+  content: '';
+  display: inline-block;
+  width: 24px;
+  height: 1px;
+  background: var(--muted);
+}
+
+.hero-title {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 56px;
+  line-height: 0.95;
+  letter-spacing: -1px;
+  color: var(--ink);
+  margin-bottom: 16px;
+}
+
+.hero-title em {
+  font-style: normal;
+  background: var(--highlight);
+  padding: 0 6px;
+  display: inline-block;
+  line-height: 1;
+}
+
+.hero-body {
+  font-size: 14px;
+  color: var(--muted);
+  max-width: 600px;
+  line-height: 1.7;
+}
+
+.hero-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border-left: 2px solid var(--ink);
+  padding-left: 20px;
+  min-width: 200px;
+}
+
+.hero-stat {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+.hero-stat:last-child { border-bottom: none; }
+
+.hero-stat-val {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 30px;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.hero-stat-lbl {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--muted);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-top: 3px;
+}
+
+/* ── BODY ── */
+.body-wrap { padding: 0 40px 40px; }
+
+.section-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 28px 0 16px;
+}
+
+.section-num {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 11px;
+  background: var(--ink);
+  color: var(--bg);
+  padding: 2px 8px;
+  letter-spacing: 1px;
+}
+
+.section-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.section-head::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ── CARDS GRID ── */
+.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); }
+.grid2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); }
+.grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); }
+
+.card {
+  background: var(--card);
+  padding: 22px 20px 20px;
+  position: relative;
+  transition: background .15s;
+}
+
+.card:hover { background: #fffef5; }
+
+.card-accent {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+}
+
+.tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 2px;
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+.tag-tech { background: #e8edf8; color: var(--accent-tech); }
+.tag-health { background: #e8f4ed; color: var(--accent-health); }
+.tag-finance { background: #f5ede6; color: var(--accent-finance); }
+.tag-green { background: #e6f3ef; color: var(--accent-green); }
+.tag-creative { background: #f0e8f8; color: var(--accent-creative); }
+.tag-data { background: #f5ede6; color: var(--accent-finance); }
+
+.card-name {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 16px;
+  line-height: 1.2;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+
+.card-salary {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 26px;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.card-salary-sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  margin-top: 2px;
+}
+
+.bar-label {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--muted);
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+.bar-track {
+  height: 4px;
+  background: var(--border);
+  border-radius: 0;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.bar-fill { height: 100%; }
+
+.card-insight {
+  font-size: 11.5px;
+  color: var(--muted);
+  line-height: 1.6;
+  border-top: 1px solid var(--border);
+  padding-top: 10px;
+}
+
+.badge-num {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 42px;
+  color: rgba(0,0,0,0.04);
+  line-height: 1;
+  pointer-events: none;
+}
+
+/* ── CHARTS ── */
+.chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); }
+
+.chart-card {
+  background: var(--card);
+  padding: 22px 20px;
+}
+
+.chart-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2.5px;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--muted);
+  letter-spacing: 1px;
+}
+
+.legend-sq {
+  width: 8px; height: 8px;
+  flex-shrink: 0;
+}
+
+/* ── DECLINE TABLE ── */
+.decline-wrap {
+  background: var(--card);
+  border: 1px solid var(--border);
+}
+
+.decline-header {
+  display: grid;
+  grid-template-columns: 1fr 100px 60px;
+  gap: 12px;
+  padding: 12px 20px;
+  border-bottom: 2px solid var(--ink);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.decline-row {
+  display: grid;
+  grid-template-columns: 1fr 100px 60px;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+  transition: background .1s;
+}
+
+.decline-row:last-child { border-bottom: none; }
+.decline-row:hover { background: #fafaf8; }
+
+.decline-name { font-size: 13px; color: var(--ink); }
+.decline-reason { font-size: 11px; color: var(--muted); }
+
+.decline-bar-bg { height: 4px; background: var(--border); border-radius: 0; overflow: hidden; }
+.decline-bar-fill { height: 100%; background: var(--accent-red); }
+
+.decline-pct {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 14px;
+  color: var(--accent-red);
+  text-align: right;
+}
+
+/* ── SKILLS ── */
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+
+.skill-card {
+  background: var(--card);
+  padding: 18px 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  transition: background .15s;
+}
+
+.skill-card:hover { background: #fffef5; }
+
+.skill-rank {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 28px;
+  line-height: 1;
+  color: var(--border2);
+  flex-shrink: 0;
+  width: 32px;
+}
+
+.skill-name {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 14px;
+  color: var(--ink);
+  margin-bottom: 3px;
+}
+
+.skill-trend {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--accent-health);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.skill-desc {
+  font-size: 11.5px;
+  color: var(--muted);
+  margin-top: 4px;
+  line-height: 1.5;
+}
+
+/* ── TICKER ── */
+.ticker-wrap {
+  border-top: 1px solid var(--border);
+  border-bottom: 2px solid var(--ink);
+  overflow: hidden;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  background: var(--ink);
+}
+
+.ticker-label {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: var(--highlight);
+  padding: 0 16px;
+  border-right: 1px solid rgba(255,255,255,.15);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  flex-shrink: 0;
+  text-transform: uppercase;
+}
+
+.ticker-scroll {
+  display: flex;
+  gap: 40px;
+  animation: scroll 40s linear infinite;
+  white-space: nowrap;
+  padding: 0 20px;
+}
+
+@keyframes scroll { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+
+.tick {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: rgba(255,255,255,.6);
+}
+
+.tick b { color: #fff; font-weight: 600; }
+
+/* ── FOOTER ── */
+footer {
+  border-top: 2px solid var(--ink);
+  padding: 16px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+footer span {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--muted);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+/* Animations */
+.card, .chart-card, .skill-card {
+  animation: fadeUp .5s ease both;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.grid3 .card:nth-child(1),
+.grid3 .card:nth-child(1) { animation-delay: .05s; }
+.grid3 .card:nth-child(2) { animation-delay: .10s; }
+.grid3 .card:nth-child(3) { animation-delay: .15s; }
+.grid3 .card:nth-child(4) { animation-delay: .20s; }
+.grid3 .card:nth-child(5) { animation-delay: .25s; }
+.grid3 .card:nth-child(6) { animation-delay: .30s; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="masthead">
+    <div class="masthead-title">Carreras en auge</div>
+    <div class="masthead-sep">·</div>
+    <div class="masthead-sub">Panorama global 2026</div>
+  </div>
+  <div class="header-right">
+    <div class="live-badge"><div class="live-dot"></div>Datos actualizados</div>
+    <div class="date-badge" id="ts"></div>
+  </div>
+</header>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-label">Flash</div>
+  <div class="ticker-scroll">
+    <div class="tick">◆ <b>WEF 2025</b> · 170M nuevos empleos proyectados al 2030</div>
+    <div class="tick">◆ <b>AI Engineer</b> · +140% de crecimiento — el rol más demandado del mundo</div>
+    <div class="tick">◆ <b>Salud</b> · Sector que más empleos creó en 2024 — 902K solo en EE.UU.</div>
+    <div class="tick">◆ <b>Energía verde</b> · 34M nuevos empleos proyectados para 2030 (WEF)</div>
+    <div class="tick">◆ <b>Ciberseguridad</b> · 514K vacantes abiertas, demanda supera la oferta</div>
+    <div class="tick">◆ <b>59%</b> de la fuerza laboral mundial necesitará reentrenarse antes de 2030</div>
+    <div class="tick">◆ <b>Prompt engineering</b> · Mercado crece a CAGR 32,8% hasta 2030</div>
+    <div class="tick">◆ <b>WEF 2025</b> · 170M nuevos empleos proyectados al 2030</div>
+    <div class="tick">◆ <b>AI Engineer</b> · +140% de crecimiento — el rol más demandado del mundo</div>
+    <div class="tick">◆ <b>Salud</b> · Sector que más empleos creó en 2024 — 902K solo en EE.UU.</div>
+    <div class="tick">◆ <b>Energía verde</b> · 34M nuevos empleos proyectados para 2030 (WEF)</div>
+    <div class="tick">◆ <b>Ciberseguridad</b> · 514K vacantes abiertas, demanda supera la oferta</div>
+    <div class="tick">◆ <b>59%</b> de la fuerza laboral mundial necesitará reentrenarse antes de 2030</div>
+    <div class="tick">◆ <b>Prompt engineering</b> · Mercado crece a CAGR 32,8% hasta 2030</div>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div>
+    <div class="hero-eyebrow">Reporte ejecutivo</div>
+    <div class="hero-title">Las carreras<br>que mueven<br><em>el mundo</em></div>
+    <div class="hero-body">Un panorama completo de los empleos con mayor crecimiento, mejores salarios y mayor demanda global en 2026. Basado en datos del WEF Future of Jobs Report 2025, Bureau of Labor Statistics, LinkedIn e Indeed.</div>
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="hero-stat-val">170M</div>
+      <div class="hero-stat-lbl">Empleos nuevos al 2030</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-val">+78M</div>
+      <div class="hero-stat-lbl">Neto positivo global</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-val">40%</div>
+      <div class="hero-stat-lbl">Skills que cambian</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-val">$280K</div>
+      <div class="hero-stat-lbl">Salario más alto (médico)</div>
+    </div>
+  </div>
+</div>
+
+<!-- BODY -->
+<div class="body-wrap">
+
+  <!-- SECCIÓN 1: Tech / IA -->
+  <div class="section-head">
+    <div class="section-num">01</div>
+    <div class="section-title">Tecnología & Inteligencia Artificial · Mayor crecimiento porcentual</div>
+  </div>
+
+  <div class="grid3">
+    <div class="card">
+      <div class="card-accent" style="background:var(--accent-tech)"></div>
+      <div class="badge-num">01</div>
+      <div class="tag tag-tech">IA / Datos</div>
+      <div class="card-name">AI & Machine Learning engineer</div>
+      <div class="card-salary">$120–200K</div>
+      <div class="card-salary-sub">USD anual · EE.UU.</div>
+      <div class="bar-label"><span>Crecimiento proyectado al 2030</span><span style="font-weight:600;color:var(--accent-tech)">+140%</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--accent-tech)"></div></div>
+      <div class="card-insight">El de mayor crecimiento porcentual según WEF. Roles de AI-native crecen entre 80–140%, muy por encima del promedio de la economía global.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent" style="background:var(--accent-tech)"></div>
+      <div class="badge-num">02</div>
+      <div class="tag tag-data">Big Data</div>
+      <div class="card-name">Big data specialist</div>
+      <div class="card-salary">$112–145K</div>
+      <div class="card-salary-sub">USD anual · mediana BLS</div>
+      <div class="bar-label"><span>Crecimiento proyectado al 2030</span><span style="font-weight:600;color:var(--accent-tech)">+120%</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width:86%;background:var(--accent-tech)"></div></div>
+      <div class="card-insight">Las empresas necesitan convertir datos masivos en decisiones. WEF lo lista entre los de mayor crecimiento. BLS reporta mediana de $112.6K.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent" style="background:#0f4a8f"></div>
+      <div class="badge-num">03</div>
+      <div class="tag tag-tech">Ciberseguridad</div>
+      <div class="card-name">Information security analyst</div>
+      <div class="card-salary">$105–140K</div>
+      <div class="card-salary-sub">USD anual · EE.UU.</div>
+      <div class="bar-label"><span>Crecimiento proyectado al 2030</span><span style="font-weight:600;color:#0f4a8f">+33%</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width:60%;background:#0f4a8f"></div></div>
+      <div class="card-insight">514.359 vacantes abiertas según CyberSeek. La demanda supera estructuralmente la oferta de talento disponible en el mercado.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent" style="background:var(--accent-finance)"></div>
+      <div class="badge-num">04</div>
+      <div class="tag tag-finance">Fintech</div>
+      <div class="card-name">Fintech engineer</div>
+      <div class="card-salary">$100–160K</div>
+      <div class="card-salary-sub">USD anual · EE.UU.</div>
+      <div class="bar-label"><span>Crecimiento proyectado al 2030</span><span style="font-weight:600;color:var(--accent-finance)">+100%</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width:71%;background:var(--accent-finance)"></div></div>
+      <div class="card-insight">WEF lo ubica entre los de mayor crecimiento porcentual. Pagos digitales, cripto, open banking y regulaciones de PSD2 impulsan la demanda global.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent" style="background:#2a5a9f"></div>
+      <div class="badge-num">05</div>
+      <div class="tag tag-tech">Software</div>
+      <div class="card-name">Software developer</div>
+      <div class="card-salary">$133K</div>
+      <div class="card-salary-sub">USD anual · mediana BLS</div>
+      <div class="bar-label"><span>Crecimiento proyectado al 2030</span><span style="font-weight:600;color:#2a5a9f">+25%</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width:50%;background:#2a5a9f"></div></div>
+      <div class="card-insight">Big tech desaceleró contrataciones en 2025, pero la demanda agregada sigue siendo muy alta. Top por salario absoluto sostenido en el tiempo.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent" style="background:var(--accent-creative)"></div>
+      <div class="badge-num">06</div>
+      <div class="tag tag-creative">Prompt / AI Ops</div>
+      <div class="card-name">Prompt engineer</div>
+      <div class="card-salary">$63–130K</div>
+      <div class="card-salary-sub">USD anual · ZipRecruiter</div>
+      <div class="bar-label"><span>CAGR del mercado</span><span style="font-weight:600;color:var(--accent-creative)">+32,8%</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width:60%;background:var(--accent-creative)"></div></div>
+      <div class="card-insight">Carrera que no existía hace 3 años. Mercado global proyecta CAGR de 32,8% hasta 2030 según Grand View Research. Oportunidad de primer entrada.</div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 2: Salud -->
+  <div class="section-head">
+    <div class="section-num">02</div>
+    <div class="section-title">Salud · Mayor volumen absoluto de crecimiento</div>
+  </div>
+
+  <div class="grid3">
+    <div class="card">
+      <div class="card-accent" style="background:var(--accent-health)"></div>
+      <div class="badge-num">01</div>
+      <div class="tag tag-health">Salud · #1 Indeed 2025</div>
+      <div class="card-name">Nurse practitioner</div>
+      <div class="card-salary">$129K</div>
+      <div class="card-salary-sub">USD anual · mediana BLS</div>
+      <div class="bar-label"><span>Crecimiento proyectado al 2030</span><span style="font-weight:600;color:var(--accent-health)">+40%</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width:75%;background:var(--accent-health)"></div></div>
+      <div class="card-insight">Indeed lo rankeó #1 en su lista de mejores empleos 2025. El envejecimiento poblacional genera demanda sostenida en EE.UU., Europa y Asia.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent" style="background:#0f5a2a"></div>
+      <div class="badge-num">02</div>
+      <div class="tag tag-health">Medicina</div>
+      <div class="card-name">Physician / Médico</div>
+      <div class="card-salary">$200–385K</div>
+      <div class="card-salary-sub">USD anual · según especialidad</div>
+      <div class="bar-label"><span>Crecimiento proyectado al 2030</span><span style="font-weight:600;color:#0f5a2a">+12%</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width:35%;background:#0f5a2a"></div></div>
+      <div class="card-insight">Salud añadió 902K empleos en 2024 en EE.UU. — más del doble del segundo sector. Una especialidad puede llegar a $385K anuales (NBC News).</div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent" style="background:#3a8f5a"></div>
+      <div class="badge-num">03</div>
+      <div class="tag tag-health">Gestión sanitaria</div>
+      <div class="card-name">Health services manager</div>
+      <div class="card-salary">$117K</div>
+      <div class="card-salary-sub">USD anual · mediana BLS 2024</div>
+      <div class="bar-label"><span>Crecimiento proyectado al 2030</span><span style="font-weight:600;color:#3a8f5a">+29%</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width:55%;background:#3a8f5a"></div></div>
+      <div class="card-insight">Perfil híbrido — salud + gestión + tecnología. La complejidad operativa de hospitales exige profesionales con formación cruzada. Alta empleabilidad global.</div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 3: Gráficos -->
+  <div class="section-head">
+    <div class="section-num">03</div>
+    <div class="section-title">Comparativas · Salario y crecimiento</div>
+  </div>
+
+  <div class="chart-grid">
+    <div class="chart-card">
+      <div class="chart-title">
+        Salario anual promedio (USD)
+      </div>
+      <div class="chart-legend">
+        <div class="legend-item"><div class="legend-sq" style="background:#8f4e1a"></div>Finanzas / Legal</div>
+        <div class="legend-item"><div class="legend-sq" style="background:#1a3a8f"></div>Tech / IA / Datos</div>
+        <div class="legend-item"><div class="legend-sq" style="background:#1a6b3a"></div>Salud</div>
+        <div class="legend-item"><div class="legend-sq" style="background:#1a6b55"></div>Energía verde</div>
+      </div>
+      <div style="position:relative;width:100%;height:280px">
+        <canvas id="chartSalarios" role="img" aria-label="Salarios anuales promedio en USD para los principales empleos en 2026. Médico 280K, Financial Manager 161K, AI Engineer 160K, Software Dev 133K, Nurse Practitioner 129K, Cybersecurity 120K, Big Data 112K, Wind Tech 65K">Médico: $280K · Financial Mgr: $161K · AI Engineer: $160K · Software Dev: $133K · Nurse Practitioner: $129K · Cybersecurity: $120K · Big Data: $112K · Wind Tech: $65K</canvas>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-title">
+        Crecimiento proyectado al 2030 (%)
+      </div>
+      <div class="chart-legend">
+        <div class="legend-item"><div class="legend-sq" style="background:#1a3a8f"></div>Tech / IA</div>
+        <div class="legend-item"><div class="legend-sq" style="background:#1a6b3a"></div>Salud</div>
+        <div class="legend-item"><div class="legend-sq" style="background:#1a6b55"></div>Energía</div>
+      </div>
+      <div style="position:relative;width:100%;height:280px">
+        <canvas id="chartCrecimiento" role="img" aria-label="Porcentaje de crecimiento proyectado al 2030 por carrera. AI Engineer +140%, Big Data +120%, Fintech +100%, Solar Wind +60%, Nurse Practitioner +40%, Cybersecurity +33%, Health Manager +29%, Software Dev +25%">AI Engineer: +140% · Big Data: +120% · Fintech: +100% · Solar/Wind: +60% · Nurse Practitioner: +40% · Cybersecurity: +33% · Health Manager: +29% · Software Dev: +25%</canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 4: Energía verde -->
+  <div class="section-head">
+    <div class="section-num">04</div>
+    <div class="section-title">Energía verde · El gran emergente — 34 millones de empleos al 2030</div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="card-accent" style="background:var(--accent-green)"></div>
+      <div class="tag tag-green">Energía renovable</div>
+      <div class="card-name">Wind turbine service technician</div>
+      <div class="card-salary">$57–75K</div>
+      <div class="card-salary-sub">USD anual · BLS</div>
+      <div class="bar-label"><span>Crecimiento proyectado al 2030</span><span style="font-weight:600;color:var(--accent-green)">+60%</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width:75%;background:var(--accent-green)"></div></div>
+      <div class="card-insight">BLS lo clasifica entre los empleos de mayor crecimiento porcentual en EE.UU. La transición energética es el mayor driver de nuevos empleos en volumen absoluto mundial.</div>
+    </div>
+    <div class="card">
+      <div class="card-accent" style="background:#2a8f6a"></div>
+      <div class="tag tag-green">Energía renovable</div>
+      <div class="card-name">Solar PV installer & green engineer</div>
+      <div class="card-salary">$50–90K</div>
+      <div class="card-salary-sub">USD anual · BLS</div>
+      <div class="bar-label"><span>Empleos nuevos al 2030</span><span style="font-weight:600;color:#2a8f6a">+34M</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width:65%;background:#2a8f6a"></div></div>
+      <div class="card-insight">WEF proyecta 34 millones de empleos nuevos en la cadena verde para 2030. Los esfuerzos para reducir emisiones y adaptarse a la crisis climática son el mayor generador de empleos en volumen absoluto del mundo.</div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 5: Declive -->
+  <div class="section-head">
+    <div class="section-num">05</div>
+    <div class="section-title">Empleos en declive · Para tener en cuenta</div>
+  </div>
+
+  <div class="decline-wrap">
+    <div class="decline-header">
+      <div>Rol</div>
+      <div>Razón principal</div>
+      <div style="text-align:right">Declive</div>
+    </div>
+    <div class="decline-row">
+      <div><div class="decline-name">Cajero / teller bancario</div></div>
+      <div><div class="decline-bar-bg"><div class="decline-bar-fill" style="width:100%"></div></div></div>
+      <div class="decline-pct">−15%</div>
+    </div>
+    <div class="decline-row">
+      <div><div class="decline-name">Asistente administrativo</div></div>
+      <div><div class="decline-bar-bg"><div class="decline-bar-fill" style="width:90%"></div></div></div>
+      <div class="decline-pct">−13%</div>
+    </div>
+    <div class="decline-row">
+      <div><div class="decline-name">Diseñador gráfico junior</div></div>
+      <div><div class="decline-bar-bg"><div class="decline-bar-fill" style="width:75%"></div></div></div>
+      <div class="decline-pct">−11%</div>
+    </div>
+    <div class="decline-row">
+      <div><div class="decline-name">Operador de ingreso de datos</div></div>
+      <div><div class="decline-bar-bg"><div class="decline-bar-fill" style="width:70%"></div></div></div>
+      <div class="decline-pct">−10%</div>
+    </div>
+    <div class="decline-row">
+      <div><div class="decline-name">Agente de viajes</div></div>
+      <div><div class="decline-bar-bg"><div class="decline-bar-fill" style="width:55%"></div></div></div>
+      <div class="decline-pct">−8%</div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 6: Skills -->
+  <div class="section-head">
+    <div class="section-num">06</div>
+    <div class="section-title">Top skills más demandadas al 2030 · WEF Future of Jobs Report</div>
+  </div>
+
+  <div class="skills-grid">
+    <div class="skill-card">
+      <div class="skill-rank">1</div>
+      <div>
+        <div class="skill-name">IA & Big data</div>
+        <div class="skill-trend">↑ Crecimiento #1 global</div>
+        <div class="skill-desc">86% de empleadores esperan que IA transforme su negocio para 2030. La habilidad más valorada del mercado.</div>
+      </div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-rank">2</div>
+      <div>
+        <div class="skill-name">Ciberseguridad</div>
+        <div class="skill-trend">↑ Crecimiento #2 global</div>
+        <div class="skill-desc">Amenazas crecientes y digitalización masiva hacen que sea imposible cubrir la demanda con el talento disponible.</div>
+      </div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-rank">3</div>
+      <div>
+        <div class="skill-name">Alfabetización digital</div>
+        <div class="skill-trend">↑ Crecimiento #3 global</div>
+        <div class="skill-desc">El 60% de los empleadores espera que el acceso digital más amplio transforme su industria para 2030.</div>
+      </div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-rank">4</div>
+      <div>
+        <div class="skill-name">Pensamiento creativo</div>
+        <div class="skill-trend">↑ Alta demanda sostenida</div>
+        <div class="skill-desc">La IA puede automatizar tareas repetitivas pero no la creatividad estratégica. Cada vez más valorada en perfiles híbridos.</div>
+      </div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-rank">5</div>
+      <div>
+        <div class="skill-name">Resiliencia & adaptación</div>
+        <div class="skill-trend">↑ Demanda en ascenso</div>
+        <div class="skill-desc">El WEF identifica la flexibilidad y curiosidad como top skills humanas que los empleadores priorizan en 2026.</div>
+      </div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-rank">6</div>
+      <div>
+        <div class="skill-name">Sostenibilidad & ESG</div>
+        <div class="skill-trend">↑ Expansión acelerada</div>
+        <div class="skill-desc">Regulaciones climáticas y metas ESG crean demanda transversal en todos los sectores, desde finanzas hasta manufactura.</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /body-wrap -->
+
+<footer>
+  <span>Fuentes: WEF Future of Jobs 2025 · BLS Occupational Outlook · Indeed · LinkedIn · Grand View Research · CyberSeek 2026</span>
+  <span id="gen-ts"></span>
+</footer>
+
+<script>
+const now = new Date();
+const opts = { weekday:'long', day:'numeric', month:'long', year:'numeric' };
+document.getElementById('ts').textContent = now.toLocaleDateString('es-MX', opts).toUpperCase();
+document.getElementById('gen-ts').textContent = 'Generado ' + now.toLocaleDateString('es-MX', { day:'numeric', month:'short', year:'numeric' }).toUpperCase();
+
+const gridC = 'rgba(0,0,0,0.06)';
+const tickC = 'rgba(0,0,0,0.4)';
+const font = { family: "'JetBrains Mono', monospace", size: 10 };
+
+new Chart(document.getElementById('chartSalarios'), {
+  type: 'bar',
+  data: {
+    labels: ['Médico', 'Financial Mgr', 'AI Engineer', 'Software Dev', 'Nurse Pract.', 'Cybersecurity', 'Big Data', 'Wind Tech'],
+    datasets: [{
+      data: [280, 161, 160, 133, 129, 120, 112, 65],
+      backgroundColor: ['#8f4e1a','#8f4e1a','#1a3a8f','#1a3a8f','#1a6b3a','#1a3a8f','#1a3a8f','#1a6b55'],
+      borderWidth: 0, borderRadius: 2,
+    }]
+  },
+  options: {
+    indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { backgroundColor: '#1a1714', callbacks: { label: ctx => '  $' + ctx.parsed.x + 'K' } }
+    },
+    scales: {
+      x: { grid: { color: gridC }, ticks: { color: tickC, font, callback: v => '$' + v + 'K' } },
+      y: { grid: { display: false }, ticks: { color: tickC, font } }
+    }
+  }
+});
+
+new Chart(document.getElementById('chartCrecimiento'), {
+  type: 'bar',
+  data: {
+    labels: ['AI Engineer', 'Big Data', 'Fintech Eng.', 'Solar / Wind', 'Nurse Pract.', 'Cybersecurity', 'Health Mgr', 'Software Dev'],
+    datasets: [{
+      data: [140, 120, 100, 60, 40, 33, 29, 25],
+      backgroundColor: ['#1a3a8f','#1a3a8f','#8f4e1a','#1a6b55','#1a6b3a','#1a3a8f','#1a6b3a','#1a3a8f'],
+      borderWidth: 0, borderRadius: 2,
+    }]
+  },
+  options: {
+    indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { backgroundColor: '#1a1714', callbacks: { label: ctx => '  +' + ctx.parsed.x + '%' } }
+    },
+    scales: {
+      x: { grid: { color: gridC }, ticks: { color: tickC, font, callback: v => '+' + v + '%' } },
+      y: { grid: { display: false }, ticks: { color: tickC, font } }
+    }
+  }
+});
+</script>
+</body>
+</html>
