@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TEKNAL · Sectores Estratégicos Argentina — Mayo 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root{--bg:#07090c;--surf:#0b0e13;--card:#0e1218;--border:#18202a;--border2:#243040;--gold:#e8b84b;--green:#27ae60;--red:#c0392b;--blue:#2980b9;--purple:#8e44ad;--text:#d5e5f0;--muted:#3d5060;--muted2:#556070}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(232,184,75,0.018) 1px,transparent 1px),linear-gradient(90deg,rgba(232,184,75,0.018) 1px,transparent 1px);background-size:36px 36px;pointer-events:none;z-index:0}
+
+/* HEADER */
+header{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:14px 28px;border-bottom:1px solid var(--border);background:rgba(7,9,12,0.98)}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:5px;color:var(--gold);text-shadow:0 0 20px rgba(232,184,75,0.3)}
+.logo span{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:400;color:var(--muted2);letter-spacing:2px;margin-left:10px}
+.hright{display:flex;align-items:center;gap:20px}
+.live{display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--green);text-transform:uppercase}
+.ldot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:blink 2s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.ts{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted2);letter-spacing:1px}
+
+/* INTRO */
+.intro{position:relative;z-index:5;display:flex;align-items:flex-end;justify-content:space-between;gap:32px;padding:24px 28px 20px;border-bottom:1px solid var(--border);background:rgba(11,14,19,0.85)}
+.intro-eyebrow{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:7px}
+.intro-title{font-family:'Bebas Neue',sans-serif;font-size:40px;letter-spacing:1px;line-height:1;color:var(--text)}
+.intro-title span{color:var(--gold)}
+.intro-sub{font-size:12px;color:#4a6575;line-height:1.7;margin-top:8px;max-width:660px}
+.intro-right{flex-shrink:0;text-align:right}
+.intro-tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:4px 12px;border:1px solid rgba(232,184,75,.35);color:var(--gold);background:rgba(232,184,75,.06);margin-bottom:8px}
+.intro-meta{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted2);letter-spacing:1.5px;text-transform:uppercase;line-height:1.9}
+
+/* TICKER */
+.ticker{position:relative;z-index:5;display:flex;align-items:center;border-bottom:1px solid var(--border);background:rgba(11,14,19,0.97);overflow:hidden;height:34px}
+.tlabel{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--gold);background:rgba(232,184,75,.07);border-right:1px solid var(--border);padding:0 14px;height:100%;display:flex;align-items:center;white-space:nowrap;flex-shrink:0}
+.tscroll{display:flex;gap:44px;animation:scroll 40s linear infinite;white-space:nowrap;padding:0 20px}
+@keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.ti{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted2)}
+.ti b{color:var(--text);font-weight:500}
+
+/* KPI STRIP */
+.kpi-row{position:relative;z-index:5;display:grid;grid-template-columns:repeat(5,1fr);border-bottom:2px solid var(--border)}
+.kpi{padding:14px 18px;border-right:1px solid var(--border)}
+.kpi:last-child{border-right:none}
+.kpi-lbl{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted2);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px}
+.kpi-val{font-family:'Bebas Neue',sans-serif;font-size:32px;line-height:1}
+.kpi-val.gold{color:var(--gold)}.kpi-val.green{color:var(--green)}.kpi-val.blue{color:var(--blue)}.kpi-val.purple{color:var(--purple)}.kpi-val.red{color:var(--red)}
+.big-num.gold{color:var(--gold)}
+.kpi-delta{font-family:'JetBrains Mono',monospace;font-size:9px;margin-top:3px}
+.kpi-delta.up{color:var(--green)}.kpi-delta.dn{color:var(--red)}.kpi-delta.neu{color:var(--muted2)}
+
+/* MAIN */
+main{position:relative;z-index:5;padding:20px 28px 40px}
+.slbl{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:2.5px;color:var(--muted2);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.slbl::after{content:'';flex:1;height:1px;background:var(--border)}
+.slbl-accent{width:3px;height:12px;border-radius:1px;flex-shrink:0}
+
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:8px}
+
+/* SECTOR BLOCKS */
+.sector-block{margin-bottom:28px}
+.sector-header{display:flex;align-items:center;gap:14px;padding:16px 20px;border-left:3px solid;margin-bottom:8px}
+.sector-header.agro{border-color:var(--green);background:rgba(39,174,96,0.05)}
+.sector-header.hidro{border-color:#e67e22;background:rgba(230,126,34,0.05)}
+.sector-header.mineria{border-color:#7f8c8d;background:rgba(127,140,141,0.05)}
+.sector-header.it{border-color:var(--blue);background:rgba(41,128,185,0.05)}
+
+.sector-icon{font-family:'Bebas Neue',sans-serif;font-size:32px;line-height:1;opacity:.7}
+.sector-icon.agro{color:var(--green)}
+.sector-icon.hidro{color:#e67e22}
+.sector-icon.mineria{color:#95a5a6}
+.sector-icon.it{color:var(--blue)}
+
+.sector-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px}
+.sector-title.agro{color:var(--green)}
+.sector-title.hidro{color:#e67e22}
+.sector-title.mineria{color:#95a5a6}
+.sector-title.it{color:var(--blue)}
+
+.sector-subtitle{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted2);letter-spacing:2px;text-transform:uppercase;margin-top:3px}
+
+.semaforo{display:flex;align-items:center;gap:6px;margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1.5px}
+.sem-dot{width:10px;height:10px;border-radius:50%}
+.sem-verde{background:var(--green);box-shadow:0 0 8px var(--green)}
+.sem-amarillo{background:var(--gold);box-shadow:0 0 8px var(--gold)}
+.sem-rojo{background:var(--red);box-shadow:0 0 8px var(--red)}
+
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border);padding:16px 18px;position:relative;overflow:hidden;animation:rise .45s ease both;transition:border-color .2s}
+.card:hover{border-color:rgba(232,184,75,.3)}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.card-title{font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:2px;color:var(--muted2);text-transform:uppercase;margin-bottom:10px}
+
+.big-num{font-family:'Bebas Neue',sans-serif;font-size:38px;line-height:1}
+.big-num.agro{color:var(--green)}.big-num.hidro{color:#e67e22}.big-num.min{color:#95a5a6}.big-num.it{color:var(--blue)}
+.big-sub{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted2);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+.card-desc{font-size:11.5px;color:#4a6575;line-height:1.65}
+
+.comp-table{width:100%;border-collapse:collapse;font-size:11px}
+.comp-table th{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:1.5px;color:var(--muted2);text-transform:uppercase;padding:0 0 8px;text-align:right;font-weight:400}
+.comp-table th:first-child{text-align:left}
+.comp-table td{padding:5px 0;border-top:1px solid var(--border);text-align:right}
+.comp-table td:first-child{text-align:left;color:var(--muted2);font-size:10.5px}
+.hl{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text);font-weight:500}
+.row-act td{color:var(--gold) !important}
+.val-up{color:var(--green);font-family:'JetBrains Mono',monospace;font-size:10px}
+.val-dn{color:var(--red);font-family:'JetBrains Mono',monospace;font-size:10px}
+.val-neu{color:var(--muted2);font-family:'JetBrains Mono',monospace;font-size:10px}
+
+.alert-box{border-left:2px solid var(--gold);background:rgba(232,184,75,.05);padding:10px 14px;margin-top:10px;font-size:11px;line-height:1.65;color:var(--muted2)}
+.alert-box strong{color:var(--gold)}
+.alert-box.green{border-color:var(--green);background:rgba(39,174,96,.05)}
+.alert-box.green strong{color:var(--green)}
+.alert-box.orange{border-color:#e67e22;background:rgba(230,126,34,.05)}
+.alert-box.orange strong{color:#e67e22}
+.alert-box.blue{border-color:var(--blue);background:rgba(41,128,185,.05)}
+.alert-box.blue strong{color:var(--blue)}
+
+.gauge-row{display:flex;flex-direction:column;gap:8px}
+.gauge-item{display:flex;flex-direction:column;gap:3px}
+.gauge-header{display:flex;justify-content:space-between}
+.gauge-name{font-size:11.5px;color:var(--text)}
+.gauge-val{font-family:'JetBrains Mono',monospace;font-size:10px}
+.gauge-bar{height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.gauge-fill{height:100%;border-radius:2px}
+
+footer{position:relative;z-index:5;display:flex;justify-content:space-between;align-items:center;padding:12px 28px;border-top:1px solid var(--border);background:rgba(7,9,12,.98)}
+footer span{font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--muted2);letter-spacing:1px}
+
+.tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;padding:2px 8px;border-radius:2px;margin-bottom:8px}
+.t-g{background:rgba(39,174,96,.1);color:var(--green);border:1px solid rgba(39,174,96,.25)}
+.t-o{background:rgba(230,126,34,.1);color:#e67e22;border:1px solid rgba(230,126,34,.25)}
+.t-s{background:rgba(149,165,166,.1);color:#95a5a6;border:1px solid rgba(149,165,166,.25)}
+.t-b{background:rgba(41,128,185,.1);color:var(--blue);border:1px solid rgba(41,128,185,.25)}
+.t-gold{background:rgba(232,184,75,.1);color:var(--gold);border:1px solid rgba(232,184,75,.25)}
+</style>
+</head>
+<body>
+
+<header>
+  <span class="logo">TEKNAL<span>· SECTORES ESTRATÉGICOS</span></span>
+  <div class="hright">
+    <div class="live"><div class="ldot"></div>REPORTE SEMANAL</div>
+    <div class="ts" id="ts"></div>
+  </div>
+</header>
+
+<div class="intro">
+  <div>
+    <div class="intro-eyebrow">◆ Reporte semanal de inversión · Argentina 2026</div>
+    <div class="intro-title">AGRO · HIDROCARBUROS<br><span>MINERÍA · IT</span></div>
+    <div class="intro-sub">Los cuatro sectores de mayor atractivo inversor en Argentina atraviesan un momento histórico simultáneo: exportaciones récord en agro e hidrocarburos, un boom minero impulsado por el RIGI, y el software consolidado como industria de clase mundial. Reporte ejecutivo para revisar cada semana.</div>
+  </div>
+  <div class="intro-right">
+    <div class="intro-tag">Teknal · Reporte Semanal</div>
+    <div class="intro-meta">Semana del 19 al 25 de mayo, 2026<br>Fuentes: BCR · CAEM · CESSI · Infobae<br>Secretaría de Energía · INDEC</div>
+  </div>
+</div>
+
+<div class="ticker">
+  <div class="tlabel">◆ FLASH</div>
+  <div class="tscroll">
+    <div class="ti">◆ <b>Agro</b> · Exportaciones Q1 2026: 40Mt · Récord histórico +11% vs año anterior</div>
+    <div class="ti">◆ <b>Soja Chicago</b> · U$S 440/t · Máximo de 16 meses · +13% en el año</div>
+    <div class="ti">◆ <b>Vaca Muerta</b> · Producción petróleo proyectada 54,5M m³ · Récord histórico 2026</div>
+    <div class="ti">◆ <b>YPF</b> · Presentó proyecto LLL Oil al RIGI · Inversión U$S 25.000M</div>
+    <div class="ti">◆ <b>Minería</b> · Exportaciones proyectadas U$S 9.000M · +49% vs 2025</div>
+    <div class="ti">◆ <b>RIGI minero</b> · 13 proyectos presentados · U$S 42.000M en inversiones potenciales</div>
+    <div class="ti">◆ <b>IT / Software</b> · Exportaciones servicios conocimiento U$S 9.600M en 2025</div>
+    <div class="ti">◆ <b>Exportaciones totales</b> · Abril 2026: U$S 8.914M · Récord mensual histórico</div>
+    <div class="ti">◆ <b>Agro</b> · Exportaciones Q1 2026: 40Mt · Récord histórico +11% vs año anterior</div>
+    <div class="ti">◆ <b>Soja Chicago</b> · U$S 440/t · Máximo de 16 meses · +13% en el año</div>
+    <div class="ti">◆ <b>Vaca Muerta</b> · Producción petróleo proyectada 54,5M m³ · Récord histórico 2026</div>
+    <div class="ti">◆ <b>YPF</b> · Presentó proyecto LLL Oil al RIGI · Inversión U$S 25.000M</div>
+    <div class="ti">◆ <b>Minería</b> · Exportaciones proyectadas U$S 9.000M · +49% vs 2025</div>
+    <div class="ti">◆ <b>RIGI minero</b> · 13 proyectos presentados · U$S 42.000M en inversiones potenciales</div>
+    <div class="ti">◆ <b>IT / Software</b> · Exportaciones servicios conocimiento U$S 9.600M en 2025</div>
+    <div class="ti">◆ <b>Exportaciones totales</b> · Abril 2026: U$S 8.914M · Récord mensual histórico</div>
+  </div>
+</div>
+
+<div class="kpi-row">
+  <div class="kpi"><div class="kpi-lbl">Exportaciones agro 2026</div><div class="kpi-val green">$36.1B</div><div class="kpi-delta up">↑ +$800M vs proyección abr</div></div>
+  <div class="kpi"><div class="kpi-lbl">Prod. petróleo 2026</div><div class="kpi-val" style="color:#e67e22">54,5M m³</div><div class="kpi-delta up">↑ +16% · Récord histórico</div></div>
+  <div class="kpi"><div class="kpi-lbl">Export. minería 2026</div><div class="kpi-val" style="color:#95a5a6">$9.000M</div><div class="kpi-delta up">↑ +49% vs 2025</div></div>
+  <div class="kpi"><div class="kpi-lbl">Export. IT / conocimiento</div><div class="kpi-val blue">$9.600M</div><div class="kpi-delta up">↑ +15% estimado 2026</div></div>
+  <div class="kpi"><div class="kpi-lbl">Export. totales (abr 2026)</div><div class="kpi-val gold">$8.914M</div><div class="kpi-delta up">↑ Récord mensual histórico</div></div>
+</div>
+
+<main>
+
+  <!-- ══ PBI MACRO ══ -->
+  <div class="slbl"><div class="slbl-accent" style="background:var(--gold)"></div>Contexto macroeconómico · PBI Argentina 2026</div>
+
+  <!-- Fila 1: KPIs PBI -->
+  <div class="g4" style="margin-bottom:8px">
+
+    <div class="card" style="border-top:2px solid var(--gold)">
+      <div class="card-title">PBI 2026 · Valor en USD</div>
+      <div class="big-num gold">$688B</div>
+      <div class="big-sub">USD nominales · FMI / Worldometer</div>
+      <table class="comp-table" style="margin-top:8px">
+        <tbody>
+          <tr><td>PBI 2024 (Banco Mundial)</td><td class="hl">U$S 633B</td></tr>
+          <tr><td>PBI 2025 (estimado)</td><td class="hl">U$S 660B</td></tr>
+          <tr class="row-act"><td>PBI 2026 (FMI proyección)</td><td class="hl">U$S 688B</td></tr>
+          <tr><td>Crecimiento real 2026</td><td class="val-up">+3,5%</td></tr>
+          <tr><td>Ranking mundial</td><td class="hl">Puesto 26</td></tr>
+          <tr><td>PBI per cápita</td><td class="hl">U$S 14.357</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Participación % en el PBI · 4 sectores</div>
+      <div style="position:relative;width:100%;height:175px">
+        <canvas id="chartPBI" role="img" aria-label="Torta de participación en PBI: Agro 8%, Hidrocarburos 6%, Minería 2%, IT 4%, Resto 80%">Agro: 8% · Hidro: 6% · Minería: 2% · IT: 4% · Resto: 80%</canvas>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:8px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--green)">● Agro ~8% · ~U$S 55B</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#e67e22">● Hidro ~6% · ~U$S 41B</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#95a5a6">● Minería ~2% · ~U$S 14B</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--blue)">● IT ~4% · ~U$S 28B</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Aporte al PBI en USD · Cada sector</div>
+      <div class="gauge-row" style="margin-top:4px">
+        <div class="gauge-item">
+          <div class="gauge-header"><span class="gauge-name" style="color:var(--green)">Agro / Agroindustria</span><span class="gauge-val" style="color:var(--green)">~U$S 55B · 8%</span></div>
+          <div class="gauge-bar"><div class="gauge-fill" style="width:100%;background:var(--green)"></div></div>
+        </div>
+        <div class="gauge-item">
+          <div class="gauge-header"><span class="gauge-name" style="color:#e67e22">Hidrocarburos / Energía</span><span class="gauge-val" style="color:#e67e22">~U$S 41B · 6%</span></div>
+          <div class="gauge-bar"><div class="gauge-fill" style="width:75%;background:#e67e22"></div></div>
+        </div>
+        <div class="gauge-item">
+          <div class="gauge-header"><span class="gauge-name" style="color:var(--blue)">IT / Software / Conocimiento</span><span class="gauge-val" style="color:var(--blue)">~U$S 28B · 4%</span></div>
+          <div class="gauge-bar"><div class="gauge-fill" style="width:51%;background:var(--blue)"></div></div>
+        </div>
+        <div class="gauge-item">
+          <div class="gauge-header"><span class="gauge-name" style="color:#95a5a6">Minería</span><span class="gauge-val" style="color:#95a5a6">~U$S 14B · 2%</span></div>
+          <div class="gauge-bar"><div class="gauge-fill" style="width:25%;background:#95a5a6"></div></div>
+        </div>
+      </div>
+      <div class="alert-box" style="margin-top:10px"><strong>Total 4 sectores:</strong> ~U$S 138B · representan ~20% del PBI · y 71% de las exportaciones totales proyectadas.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Peso en exportaciones 2026 · Total ~U$S 100B</div>
+      <div class="gauge-row" style="margin-top:4px">
+        <div class="gauge-item">
+          <div class="gauge-header"><span class="gauge-name" style="color:var(--green)">Agro</span><span class="gauge-val" style="color:var(--green)">U$S 36B · 36%</span></div>
+          <div class="gauge-bar"><div class="gauge-fill" style="width:100%;background:var(--green)"></div></div>
+        </div>
+        <div class="gauge-item">
+          <div class="gauge-header"><span class="gauge-name" style="color:#e67e22">Hidrocarburos</span><span class="gauge-val" style="color:#e67e22">~U$S 15B · 15%</span></div>
+          <div class="gauge-bar"><div class="gauge-fill" style="width:42%;background:#e67e22"></div></div>
+        </div>
+        <div class="gauge-item">
+          <div class="gauge-header"><span class="gauge-name" style="color:var(--blue)">IT / Servicios</span><span class="gauge-val" style="color:var(--blue)">~U$S 11B · 11%</span></div>
+          <div class="gauge-bar"><div class="gauge-fill" style="width:30%;background:var(--blue)"></div></div>
+        </div>
+        <div class="gauge-item">
+          <div class="gauge-header"><span class="gauge-name" style="color:#95a5a6">Minería</span><span class="gauge-val" style="color:#95a5a6">~U$S 9B · 9%</span></div>
+          <div class="gauge-bar"><div class="gauge-fill" style="width:25%;background:#95a5a6"></div></div>
+        </div>
+        <div class="gauge-item">
+          <div class="gauge-header"><span class="gauge-name">Resto</span><span class="gauge-val" style="color:var(--muted2)">~U$S 29B · 29%</span></div>
+          <div class="gauge-bar"><div class="gauge-fill" style="width:29%;background:var(--border2)"></div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Fila 2: Serie histórica 20 años -->
+  <div class="g2" style="margin-bottom:28px">
+
+    <div class="card">
+      <div class="card-title">PBI Argentina en USD · Serie histórica 2005–2026</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted2);margin-bottom:8px">USD miles de millones nominales · Fuente: Banco Mundial / FMI</div>
+      <div style="position:relative;width:100%;height:240px">
+        <canvas id="chartPBISerie" role="img" aria-label="Serie histórica PBI Argentina en USD 2005 a 2026">2005: 198B, 2006: 214B, 2007: 261B, 2008: 328B, 2009: 308B, 2010: 424B, 2011: 530B, 2012: 545B, 2013: 552B, 2014: 526B, 2015: 643B, 2016: 554B, 2017: 643B, 2018: 525B, 2019: 448B, 2020: 386B, 2021: 487B, 2022: 632B, 2023: 646B, 2024: 633B, 2025: 660B, 2026: 688B</canvas>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Participación sectores en PBI · Evolución 2005–2026</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted2);margin-bottom:8px">% del PBI estimado por sector · Fuente: INDEC / Trading Economics / CAEM / CESSI</div>
+      <div style="position:relative;width:100%;height:240px">
+        <canvas id="chartSectoresPBI" role="img" aria-label="Evolución del peso de cada sector en el PBI argentino 2005 a 2026">Agro fue declinando levemente, hidrocarburos creció, minería emergió, IT creció sostenidamente</canvas>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══ AGRO ══ -->
+  <div class="sector-block">
+    <div class="sector-header agro">
+      <div class="sector-icon agro">🌾</div>
+      <div>
+        <div class="sector-title agro">AGRO · AGROINDUSTRIA</div>
+        <div class="sector-subtitle">Complejo cerealero · oleaginoso · ganadero</div>
+      </div>
+      <div class="semaforo" style="color:var(--green)">
+        <div class="sem-dot sem-verde"></div>MOMENTO RÉCORD
+      </div>
+    </div>
+
+    <div class="g3">
+      <div class="card">
+        <div class="card-title">Exportaciones agroindustriales 2026</div>
+        <div class="big-num agro">$36.1B</div>
+        <div class="big-sub">USD · Proyección anual BCR</div>
+        <div class="card-desc">Q1 2026 cerró con 40Mt embarcadas (+11% sobre el récord anterior). Maíz como gran motor: 10,3Mt en mar–abr, 54% más que campaña anterior. El agro vuelve a ser el gran sostén de divisas.</div>
+        <div class="alert-box green"><strong>Soja Chicago:</strong> U$S 440/t — máximo de 16 meses. +13% en el año. Harina de soja a U$S 360/t (+23% desde octubre).</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Precios commodities · Comparativa</div>
+        <table class="comp-table">
+          <thead><tr><th>Commodity</th><th>May 2025</th><th>May 2026</th><th>Var</th></tr></thead>
+          <tbody>
+            <tr class="row-act"><td>Soja (Chicago)</td><td class="hl">~U$S 380</td><td class="hl">U$S 440</td><td class="val-up">+16%</td></tr>
+            <tr><td>Maíz</td><td class="hl">~U$S 165</td><td class="hl">U$S 180</td><td class="val-up">+9%</td></tr>
+            <tr><td>Trigo</td><td class="hl">~U$S 200</td><td class="hl">U$S 210</td><td class="val-up">+5%</td></tr>
+            <tr><td>Aceite girasol</td><td class="hl">U$S 1.100</td><td class="hl">U$S 1.300</td><td class="val-up">+18%</td></tr>
+            <tr><td>Harina soja</td><td class="hl">U$S 290</td><td class="hl">U$S 360</td><td class="val-up">+24%</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Cosecha 2025/26 · Proyección BCR</div>
+        <div class="gauge-row">
+          <div class="gauge-item">
+            <div class="gauge-header"><span class="gauge-name">Soja</span><span class="gauge-val" style="color:var(--green)">50Mt</span></div>
+            <div class="gauge-bar"><div class="gauge-fill" style="width:83%;background:var(--green)"></div></div>
+          </div>
+          <div class="gauge-item">
+            <div class="gauge-header"><span class="gauge-name">Maíz</span><span class="gauge-val" style="color:var(--green)">68Mt</span></div>
+            <div class="gauge-bar"><div class="gauge-fill" style="width:95%;background:var(--green)"></div></div>
+          </div>
+          <div class="gauge-item">
+            <div class="gauge-header"><span class="gauge-name">Trigo</span><span class="gauge-val" style="color:var(--green)">18Mt</span></div>
+            <div class="gauge-bar"><div class="gauge-fill" style="width:72%;background:var(--green)"></div></div>
+          </div>
+          <div class="gauge-item">
+            <div class="gauge-header"><span class="gauge-name">Girasol</span><span class="gauge-val" style="color:var(--green)">4,5Mt</span></div>
+            <div class="gauge-bar"><div class="gauge-fill" style="width:60%;background:var(--green)"></div></div>
+          </div>
+        </div>
+        <div class="alert-box green" style="margin-top:10px"><strong>Milei bajó retenciones</strong> al trigo y cebada. Impacto positivo en competitividad exportadora. Potencial +U$S 800M adicionales si se bajan en soja.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ HIDROCARBUROS ══ -->
+  <div class="sector-block">
+    <div class="sector-header hidro">
+      <div class="sector-icon hidro">⚡</div>
+      <div>
+        <div class="sector-title hidro">HIDROCARBUROS · VACA MUERTA</div>
+        <div class="sector-subtitle">Petróleo · Gas natural · GNL · Shale no convencional</div>
+      </div>
+      <div class="semaforo" style="color:#e67e22">
+        <div class="sem-dot sem-verde"></div>BOOM HISTÓRICO
+      </div>
+    </div>
+
+    <div class="g3">
+      <div class="card">
+        <div class="card-title">Producción petróleo 2026</div>
+        <div class="big-num hidro">54,5M</div>
+        <div class="big-sub">m³ · Mayor de la historia argentina</div>
+        <div class="card-desc">+16% vs 2025. Supera el récord de 1998. Neuquén ya superó los 600.000 bbl/día por primera vez. Las exportaciones petroleras fueron U$S 1.544M en abril — salto del 86% interanual.</div>
+        <div class="alert-box orange"><strong>YPF LLL Oil:</strong> U$S 25.000M presentados al RIGI. Meta de 240.000 bbl/d a partir de 2032. La mayor inversión en hidrocarburos de la historia argentina.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Exportaciones energéticas · Comparativa</div>
+        <table class="comp-table">
+          <thead><tr><th>Indicador</th><th>2025</th><th>2026 proy.</th><th>Var</th></tr></thead>
+          <tbody>
+            <tr class="row-act"><td>Export. petróleo (anual)</td><td class="hl">U$S 6.716M</td><td class="hl">~U$S 9.000M</td><td class="val-up">+34%</td></tr>
+            <tr><td>Export. abril</td><td class="hl">U$S 830M</td><td class="hl">U$S 1.544M</td><td class="val-up">+86%</td></tr>
+            <tr><td>Superávit energético</td><td class="hl">U$S 6.911M</td><td class="hl">~U$S 9.000M</td><td class="val-up">+30%</td></tr>
+            <tr><td>Prod. gas (vs 2025)</td><td class="hl">—</td><td class="hl">−1%</td><td class="val-neu">2do más alto en 20 años</td></tr>
+            <tr><td>RIGI aprobados</td><td class="hl">—</td><td class="hl">>U$S 25.000M</td><td class="val-up">YPF solo</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Hoja de ruta Vaca Muerta</div>
+        <div class="gauge-row">
+          <div class="gauge-item">
+            <div class="gauge-header"><span class="gauge-name">Producción actual (bbl/d)</span><span class="gauge-val" style="color:#e67e22">600K+</span></div>
+            <div class="gauge-bar"><div class="gauge-fill" style="width:60%;background:#e67e22"></div></div>
+          </div>
+          <div class="gauge-item">
+            <div class="gauge-header"><span class="gauge-name">Meta mediano plazo</span><span class="gauge-val" style="color:#e67e22">1M bbl/d</span></div>
+            <div class="gauge-bar"><div class="gauge-fill" style="width:80%;background:#f39c12"></div></div>
+          </div>
+          <div class="gauge-item">
+            <div class="gauge-header"><span class="gauge-name">Techo 2035</span><span class="gauge-val" style="color:var(--muted2)">1.8M bbl/d</span></div>
+            <div class="gauge-bar"><div class="gauge-fill" style="width:100%;background:var(--border2)"></div></div>
+          </div>
+        </div>
+        <div class="alert-box orange" style="margin-top:10px"><strong>VMOS Oleoducto:</strong> Operativo Q3 2026. 190.000 bbl/d iniciales → 550.000 máx. Primer embarque desde Punta Colorada: dic 2026–ene 2027.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ MINERÍA ══ -->
+  <div class="sector-block">
+    <div class="sector-header mineria">
+      <div class="sector-icon mineria">⛏</div>
+      <div>
+        <div class="sector-title mineria">MINERÍA · LITIO · ORO · COBRE</div>
+        <div class="sector-subtitle">Litio · Oro · Plata · Cobre · RIGI</div>
+      </div>
+      <div class="semaforo" style="color:#95a5a6">
+        <div class="sem-dot sem-verde"></div>DESPEGUE ACELERADO
+      </div>
+    </div>
+
+    <div class="g3">
+      <div class="card">
+        <div class="card-title">Exportaciones mineras 2026</div>
+        <div class="big-num min">$9.000M</div>
+        <div class="big-sub">USD · Proyección CAEM · +49% vs 2025</div>
+        <div class="card-desc">Saltó de U$S 6.056M en 2025 a U$S 9.000M proyectados para 2026. Motor: suba del precio del oro y la plata + crecimiento del litio. Potencial adicional de U$S 1.000M si los precios se sostienen.</div>
+        <div class="alert-box"><strong>Litio:</strong> Producción creció de 35.000t en 2022 a 116.000t en 2025. Exportaciones litio 2026 proyectadas en U$S 1.400M.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">RIGI Minero · Estado de proyectos</div>
+        <table class="comp-table">
+          <thead><tr><th>Indicador</th><th>Dato</th></tr></thead>
+          <tbody>
+            <tr><td>Proyectos presentados</td><td class="hl">13 proyectos</td></tr>
+            <tr class="row-act"><td>Inversión potencial total</td><td class="hl">U$S 42.000M</td></tr>
+            <tr><td>Proyectos aprobados</td><td class="hl">7 (U$S 7.948M)</td></tr>
+            <tr><td>Export. potencial 2032</td><td class="hl">U$S 22.000M</td></tr>
+            <tr><td>Empleo 2032 (proy.)</td><td class="hl">200.000 puestos</td></tr>
+            <tr><td>Empleo actual</td><td class="hl">100.000 puestos</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Minerales clave · Precios y tendencia</div>
+        <div class="gauge-row">
+          <div class="gauge-item">
+            <div class="gauge-header"><span class="gauge-name">Oro</span><span class="gauge-val" style="color:var(--gold)">~U$S 3.300/oz</span></div>
+            <div class="gauge-bar"><div class="gauge-fill" style="width:95%;background:var(--gold)"></div></div>
+          </div>
+          <div class="gauge-item">
+            <div class="gauge-header"><span class="gauge-name">Plata</span><span class="gauge-val" style="color:#c0c0c0">~U$S 33/oz</span></div>
+            <div class="gauge-bar"><div class="gauge-fill" style="width:70%;background:#c0c0c0"></div></div>
+          </div>
+          <div class="gauge-item">
+            <div class="gauge-header"><span class="gauge-name">Litio (carb. equiv.)</span><span class="gauge-val" style="color:#5dade2">~U$S 12.000/t</span></div>
+            <div class="gauge-bar"><div class="gauge-fill" style="width:45%;background:#5dade2"></div></div>
+          </div>
+          <div class="gauge-item">
+            <div class="gauge-header"><span class="gauge-name">Cobre</span><span class="gauge-val" style="color:#e67e22">~U$S 9.800/t</span></div>
+            <div class="gauge-bar"><div class="gauge-fill" style="width:65%;background:#e67e22"></div></div>
+          </div>
+        </div>
+        <div class="alert-box" style="margin-top:10px"><strong>Gran apuesta mediano plazo:</strong> Cobre — proyectos Agua Rica-MARA y El Pachón. Potencial U$S 22.000M anuales en exportaciones hacia 2032.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ IT ══ -->
+  <div class="sector-block">
+    <div class="sector-header it">
+      <div class="sector-icon it">💻</div>
+      <div>
+        <div class="sector-title it">IT · SOFTWARE · SERVICIOS DIGITALES</div>
+        <div class="sector-subtitle">Software · Fintech · IA · Cloud · Ciberseguridad</div>
+      </div>
+      <div class="semaforo" style="color:var(--blue)">
+        <div class="sem-dot sem-verde"></div>MADUREZ + EXPANSIÓN
+      </div>
+    </div>
+
+    <div class="g3">
+      <div class="card">
+        <div class="card-title">Industria del software Argentina 2025</div>
+        <div class="big-num it">$22.2B</div>
+        <div class="big-sub">USD · Facturación anual total CESSI</div>
+        <div class="card-desc">El sector generó 158.179 empleos registrados. Salarios duplican el promedio del sector privado. 35,4% de participación femenina. Exportaciones servicios conocimiento: U$S 9.600M en 2025.</div>
+        <div class="alert-box blue"><strong>2026:</strong> CESSI proyecta exportaciones IT de ~U$S 3.000M solo en software. Crecimiento más moderado que años anteriores por impacto de IA y competencia global.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">KPIs sector IT · Comparativa</div>
+        <table class="comp-table">
+          <thead><tr><th>Indicador</th><th>2024</th><th>2025</th><th>Var</th></tr></thead>
+          <tbody>
+            <tr class="row-act"><td>Export. serv. conocimiento</td><td class="hl">U$S 8.300M</td><td class="hl">U$S 9.600M</td><td class="val-up">+16%</td></tr>
+            <tr><td>Export. software</td><td class="hl">U$S 2.300M</td><td class="hl">U$S 2.651M</td><td class="val-up">+15%</td></tr>
+            <tr><td>Empleos registrados</td><td class="hl">152.000</td><td class="hl">158.179</td><td class="val-up">+4%</td></tr>
+            <tr><td>Empresas del sector</td><td class="hl">5.200</td><td class="hl">5.500+</td><td class="val-up">+6%</td></tr>
+            <tr><td>Facturación total</td><td class="hl">U$S 19.000M</td><td class="hl">U$S 22.221M</td><td class="val-up">+17%</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Destino exportaciones IT</div>
+        <div class="gauge-row">
+          <div class="gauge-item">
+            <div class="gauge-header"><span class="gauge-name">LATAM hispanohablante</span><span class="gauge-val" style="color:var(--blue)">53%</span></div>
+            <div class="gauge-bar"><div class="gauge-fill" style="width:53%;background:var(--blue)"></div></div>
+          </div>
+          <div class="gauge-item">
+            <div class="gauge-header"><span class="gauge-name">Estados Unidos</span><span class="gauge-val" style="color:#3498db">44%</span></div>
+            <div class="gauge-bar"><div class="gauge-fill" style="width:44%;background:#3498db"></div></div>
+          </div>
+          <div class="gauge-item">
+            <div class="gauge-header"><span class="gauge-name">Europa</span><span class="gauge-val" style="color:var(--muted2)">3%</span></div>
+            <div class="gauge-bar"><div class="gauge-fill" style="width:8%;background:var(--muted2)"></div></div>
+          </div>
+        </div>
+        <div class="alert-box blue" style="margin-top:12px"><strong>Segmentos de mayor crecimiento:</strong> IA, Cloud, Ciberseguridad y Fintech. CESSI destaca que el sector ya supera en creación de empleo al agro, minería e hidrocarburos individualmente.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ GRÁFICOS COMPARATIVOS ══ -->
+  <div class="slbl" style="margin-top:8px"><div class="slbl-accent" style="background:var(--gold)"></div>Comparativa entre sectores</div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="card-title">Exportaciones por sector · 2025 vs 2026 proyectado (USD miles de millones)</div>
+      <div style="position:relative;width:100%;height:240px">
+        <canvas id="chartSectores" role="img" aria-label="Comparativa de exportaciones por sector entre 2025 y 2026. Agro: 36B ambos años. Hidrocarburos: 10B a 15B. Minería: 6B a 9B. IT/Software: 9.6B a 11B">Agro 2025: 36B, 2026: 36.1B · Hidrocarburos 2025: 10B, 2026: 15B · Minería 2025: 6.1B, 2026: 9B · IT 2025: 9.6B, 2026: 11B</canvas>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Crecimiento interanual por sector 2026 (%)</div>
+      <div style="position:relative;width:100%;height:240px">
+        <canvas id="chartCrecimiento" role="img" aria-label="Crecimiento interanual proyectado 2026 por sector. Minería +49%, Hidrocarburos +50%, IT +15%, Agro +2%">Minería: +49% · Hidrocarburos: +50% · IT: +15% · Agro: +2%</canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ANÁLISIS EJECUTIVO ══ -->
+  <div class="slbl" style="margin-top:16px"><div class="slbl-accent" style="background:var(--gold)"></div>Análisis ejecutivo semanal</div>
+
+  <div class="g4">
+    <div class="card">
+      <div class="tag t-g">AGRO</div>
+      <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:8px;line-height:1.3">Cosecha récord + precios en alza = momento óptimo</div>
+      <div style="font-size:11.5px;color:#4a6575;line-height:1.65">Confluencia de volumen récord (50Mt soja + 68Mt maíz) con precios altos post-acuerdo China–EE.UU. Riesgo: dependencia climática y volatilidad retenciones. Baja de retenciones al trigo es una señal positiva.</div>
+    </div>
+    <div class="card">
+      <div class="tag t-o">HIDROCARBUROS</div>
+      <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:8px;line-height:1.3">Vaca Muerta en etapa de escala industrial</div>
+      <div style="font-size:11.5px;color:#4a6575;line-height:1.65">La producción pasó de emergente a estructural. El VMOS cambia el juego en logística. YPF con U$S 25.000M al RIGI señala confianza institucional. Riesgo: precio internacional del Brent y capacidad de infraestructura.</div>
+    </div>
+    <div class="card">
+      <div class="tag t-s">MINERÍA</div>
+      <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:8px;line-height:1.3">El sector de mayor crecimiento relativo en 2026</div>
+      <div style="font-size:11.5px;color:#4a6575;line-height:1.65">+49% en exportaciones es el salto más grande entre los cuatro sectores. El RIGI es el catalizador. Riesgo: litio con precios deprimidos post-boom. Oportunidad: cobre y oro con precios históricos altos.</div>
+    </div>
+    <div class="card">
+      <div class="tag t-b">IT / SOFTWARE</div>
+      <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:8px;line-height:1.3">Industria madura con desafío de la IA generativa</div>
+      <div style="font-size:11.5px;color:#4a6575;line-height:1.65">Crecimiento más moderado que años anteriores. La IA es simultáneamente amenaza (automatización de tareas) y oportunidad (nuevos servicios). Argentina bien posicionada por talento y bilingüismo. Riesgo: fuga de cerebros.</div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <span>TEKNAL · REPORTE SEMANAL SECTORES ESTRATÉGICOS · MAYO 2026</span>
+  <span id="gen">FUENTES: BCR · CAEM · CESSI · INFOBAE · SECRETARÍA ENERGÍA · INDEC · ARGENCON</span>
+</footer>
+
+<script>
+const now = new Date();
+document.getElementById('ts').textContent =
+  now.toLocaleDateString('es-MX',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).toUpperCase();
+
+Chart.defaults.color = '#3d5060';
+Chart.defaults.borderColor = '#18202a';
+Chart.defaults.font.family = "'JetBrains Mono', monospace";
+Chart.defaults.font.size = 10;
+
+const tt = {backgroundColor:'#0e1218',borderColor:'#18202a',borderWidth:1};
+
+new Chart(document.getElementById('chartPBI'),{
+  type:'doughnut',
+  data:{
+    labels:['Agro / Agroindustria','Hidrocarburos','Minería','IT / Software','Resto economía'],
+    datasets:[{
+      data:[8,6,2,4,80],
+      backgroundColor:['rgba(39,174,96,0.85)','rgba(230,126,34,0.85)','rgba(149,165,166,0.85)','rgba(41,128,185,0.85)','rgba(255,255,255,0.06)'],
+      borderColor:['#18202a'],
+      borderWidth:2,
+      hoverOffset:6
+    }]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,cutout:'65%',
+    plugins:{
+      legend:{display:false},
+      tooltip:{...tt,callbacks:{label:ctx=>' '+ctx.label+': ~'+ctx.parsed+'% del PBI'}}
+    }
+  }
+});
+
+new Chart(document.getElementById('chartPBISerie'),{
+  type:'line',
+  data:{
+    labels:['2005','2006','2007','2008','2009','2010','2011','2012','2013','2014','2015','2016','2017','2018','2019','2020','2021','2022','2023','2024','2025e','2026p'],
+    datasets:[{
+      label:'PBI Argentina (U$S B)',
+      data:[198,214,261,328,308,424,530,545,552,526,643,554,643,525,448,386,487,632,646,633,660,688],
+      borderColor:'rgba(232,184,75,0.9)',
+      backgroundColor:'rgba(232,184,75,0.07)',
+      borderWidth:2, fill:true, tension:0.3,
+      pointBackgroundColor: function(ctx){
+        const idx = ctx.dataIndex;
+        if(idx >= 20) return '#e8b84b';
+        if([4,9,14,15].includes(idx)) return '#c0392b';
+        return 'rgba(232,184,75,0.7)';
+      },
+      pointRadius:4, pointHoverRadius:6
+    }]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{
+      legend:{display:false},
+      tooltip:{...tt, callbacks:{label:ctx=>' U$S '+ctx.parsed.y+'B'}}
+    },
+    scales:{
+      x:{grid:{color:'#18202a'}, ticks:{color:'#556070', maxRotation:45}},
+      y:{grid:{color:'#18202a'}, ticks:{color:'#556070', callback:v=>'$'+v+'B'}, min:100}
+    }
+  }
+});
+
+new Chart(document.getElementById('chartSectoresPBI'),{
+  type:'line',
+  data:{
+    labels:['2005','2007','2009','2011','2013','2015','2017','2019','2021','2023','2025e','2026p'],
+    datasets:[
+      {
+        label:'Agro / Agroindustria',
+        data:[9,8.5,8.5,8,8.2,8,7.8,7.5,7.8,7.8,8,8],
+        borderColor:'rgba(39,174,96,0.9)', backgroundColor:'transparent',
+        borderWidth:2, tension:0.4, pointRadius:3
+      },
+      {
+        label:'Hidrocarburos / Energía',
+        data:[5,5.2,4.8,5,4.5,4,3.8,3.5,4,4.5,5.5,6],
+        borderColor:'rgba(230,126,34,0.9)', backgroundColor:'transparent',
+        borderWidth:2, tension:0.4, pointRadius:3
+      },
+      {
+        label:'IT / Software',
+        data:[1.5,1.8,2,2.3,2.5,2.8,3,3.2,3.5,3.8,4,4],
+        borderColor:'rgba(41,128,185,0.9)', backgroundColor:'transparent',
+        borderWidth:2, tension:0.4, pointRadius:3
+      },
+      {
+        label:'Minería',
+        data:[0.8,0.9,0.9,1,1.1,1.2,1.2,1.1,1.2,1.5,1.8,2],
+        borderColor:'rgba(149,165,166,0.9)', backgroundColor:'transparent',
+        borderWidth:2, tension:0.4, pointRadius:3
+      }
+    ]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{
+      legend:{
+        display:true,
+        position:'bottom',
+        labels:{color:'#556070', font:{size:9, family:"'JetBrains Mono',monospace"}, boxWidth:10, padding:12}
+      },
+      tooltip:{...tt, callbacks:{label:ctx=>' '+ctx.dataset.label+': ~'+ctx.parsed.y+'% del PBI'}}
+    },
+    scales:{
+      x:{grid:{color:'#18202a'}, ticks:{color:'#556070'}},
+      y:{grid:{color:'#18202a'}, ticks:{color:'#556070', callback:v=>v+'%'}, min:0, max:12}
+    }
+  }
+});
+
+new Chart(document.getElementById('chartSectores'),{
+  type:'bar',
+  data:{
+    labels:['Agro','Hidrocarburos','Minería','IT / Software'],
+    datasets:[
+      {label:'2025',data:[36,10,6.1,9.6],backgroundColor:'rgba(255,255,255,0.08)',borderColor:'rgba(255,255,255,0.2)',borderWidth:1,borderRadius:3},
+      {label:'2026 proy.',data:[36.1,15,9,11],backgroundColor:['rgba(39,174,96,0.7)','rgba(230,126,34,0.7)','rgba(149,165,166,0.7)','rgba(41,128,185,0.7)'],borderWidth:0,borderRadius:3}
+    ]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{...tt,callbacks:{label:ctx=>' U$S '+ctx.parsed.y+'B'}}},
+    scales:{
+      x:{grid:{color:'#18202a'},ticks:{color:'#556070'}},
+      y:{grid:{color:'#18202a'},ticks:{color:'#556070',callback:v=>'U$S '+v+'B'}}
+    }
+  }
+});
+
+new Chart(document.getElementById('chartCrecimiento'),{
+  type:'bar',
+  data:{
+    labels:['Hidrocarburos','Minería','IT / Software','Agro'],
+    datasets:[{
+      label:'Crecimiento % 2026',
+      data:[50,49,15,2],
+      backgroundColor:['rgba(230,126,34,0.7)','rgba(149,165,166,0.7)','rgba(41,128,185,0.7)','rgba(39,174,96,0.7)'],
+      borderWidth:0,borderRadius:3
+    }]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{...tt,callbacks:{label:ctx=>' +'+ctx.parsed.y+'%'}}},
+    scales:{
+      x:{grid:{color:'#18202a'},ticks:{color:'#556070'}},
+      y:{grid:{color:'#18202a'},ticks:{color:'#556070',callback:v=>'+'+v+'%'}}
+    }
+  }
+});
+</script>
+</body>
+</html>
