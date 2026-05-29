@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TEKNAL · Dashboard Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#06090c;--card:#0d1117;--border:#182030;
+  --gold:#e8b84b;--green:#27ae60;--red:#c0392b;--blue:#2471a3;
+  --orange:#d35400;--purple:#7d3c98;
+  --text:#d5e5f2;--muted:#3d5060;--muted2:#556070;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(232,184,75,.015) 1px,transparent 1px),linear-gradient(90deg,rgba(232,184,75,.015) 1px,transparent 1px);background-size:36px 36px;pointer-events:none;z-index:0}
+
+/* HEADER */
+header{
+  position:relative;z-index:10;
+  padding:28px 48px 24px;
+  border-bottom:1px solid var(--border);
+  background:rgba(6,9,12,.98);
+  display:flex;align-items:flex-end;justify-content:space-between;
+}
+.logo-wrap{}
+.logo-eyebrow{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--muted2);text-transform:uppercase;margin-bottom:6px}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:6px;color:var(--gold);text-shadow:0 0 30px rgba(232,184,75,.3);line-height:1}
+.logo-sub{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted2);letter-spacing:3px;text-transform:uppercase;margin-top:6px}
+.header-right{display:flex;align-items:center;gap:16px}
+.live{display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--green);text-transform:uppercase}
+.ldot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.ts{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted2);letter-spacing:1px}
+
+/* HERO */
+.hero{
+  position:relative;z-index:5;
+  padding:48px 48px 40px;
+  border-bottom:1px solid var(--border);
+  background:rgba(10,13,18,.7);
+  display:grid;grid-template-columns:1fr auto;gap:48px;align-items:center;
+}
+.hero-title{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:1px;line-height:0.95;color:var(--text);margin-bottom:16px}
+.hero-title span{color:var(--gold)}
+.hero-desc{font-size:14px;color:#4a6575;line-height:1.75;max-width:580px}
+.hero-stats{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:24px;min-width:180px}
+.hero-stat{padding:10px 0;border-bottom:1px solid var(--border)}
+.hero-stat:last-child{border-bottom:none}
+.hero-stat-val{font-family:'Bebas Neue',sans-serif;font-size:28px;line-height:1;color:var(--gold)}
+.hero-stat-lbl{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted2);letter-spacing:1.5px;text-transform:uppercase;margin-top:2px}
+
+/* GRID DASHBOARDS */
+.section{position:relative;z-index:5;padding:36px 48px 48px}
+.section-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--muted2);text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:12px}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+
+.dash-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
+
+.dash-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  padding:28px;
+  position:relative;
+  overflow:hidden;
+  text-decoration:none;
+  color:var(--text);
+  display:flex;flex-direction:column;
+  transition:border-color .25s,transform .2s,background .2s;
+  cursor:pointer;
+}
+.dash-card:hover{
+  border-color:var(--gold);
+  transform:translateY(-3px);
+  background:#0f141a;
+}
+.dash-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,transparent,var(--accent-color),transparent);
+  opacity:0;transition:opacity .25s;
+}
+.dash-card:hover::before{opacity:1}
+
+.dash-card-bg-num{
+  position:absolute;bottom:-10px;right:16px;
+  font-family:'Bebas Neue',sans-serif;font-size:80px;
+  color:rgba(255,255,255,.025);line-height:1;pointer-events:none;
+  transition:color .25s;
+}
+.dash-card:hover .dash-card-bg-num{color:rgba(255,255,255,.04)}
+
+.dash-icon{font-size:32px;margin-bottom:14px;line-height:1}
+.dash-tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;padding:3px 10px;border-radius:2px;margin-bottom:12px;font-weight:700}
+.dash-title{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:.5px;line-height:1.1;color:var(--text);margin-bottom:10px}
+.dash-desc{font-size:12px;color:#4a6575;line-height:1.65;flex:1}
+.dash-meta{margin-top:16px;padding-top:14px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.dash-freq{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted2);letter-spacing:1px;text-transform:uppercase}
+.dash-arrow{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);transition:color .25s,transform .25s}
+.dash-card:hover .dash-arrow{color:var(--gold);transform:translateX(4px)}
+
+/* FEATURED */
+.dash-card.featured{grid-column:span 2}
+
+/* FOOTER */
+footer{
+  position:relative;z-index:5;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:16px 48px;
+  border-top:1px solid var(--border);
+  background:rgba(6,9,12,.98);
+}
+footer span{font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--muted2);letter-spacing:1px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-wrap">
+    <div class="logo-eyebrow">Intelligence Hub</div>
+    <div class="logo">TEKNAL</div>
+    <div class="logo-sub">Dashboard · Centro de información estratégica</div>
+  </div>
+  <div class="header-right">
+    <div class="live"><div class="ldot"></div>Datos actualizados</div>
+    <div class="ts" id="ts"></div>
+  </div>
+</header>
+
+<div class="hero">
+  <div>
+    <div class="hero-title">INTELIGENCIA<br>PARA DECIDIR<br><span>MEJOR</span></div>
+    <div class="hero-desc">Centro de dashboards <strong style="color:var(--muted2)">(en construcción permanente)</strong> ejecutivos de Teknal. Información en tiempo real sobre materias primas, mercados financieros, inteligencia artificial, sectores de inversión, competidores y tendencias globales. Seleccioná el dashboard que necesitás.</div>
+    <div style="margin-top:20px;padding:14px 18px;border-left:3px solid var(--gold);background:rgba(232,184,75,.06);border-radius:0 4px 4px 0;max-width:580px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:6px">◆ Para vos que estás viendo esto</div>
+      <div style="font-size:13px;color:#7a9aaa;line-height:1.7">Si llegaste a este link es porque podés colaborar. Tu feedback es el insumo que, junto con IA, nos permite mejorar estos dashboards semana a semana. Contanos qué falta, qué sobra o qué cambiarías — lo implementamos.</div>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="hero-stat-val">6</div>
+      <div class="hero-stat-lbl">Dashboards activos</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-val">Semanal</div>
+      <div class="hero-stat-lbl">Frecuencia de actualización</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-val">2026</div>
+      <div class="hero-stat-lbl">Datos proyectados</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">Dashboards disponibles</div>
+  <div class="dash-grid">
+
+    <!-- 1. MATERIAS PRIMAS - FEATURED -->
+    <a class="dash-card featured" href="teknal-materias-primas-dashboard.html" style="--accent-color:var(--orange)">
+      <div class="dash-card-bg-num">01</div>
+      <div class="dash-icon">📦</div>
+      <div class="dash-tag" style="background:rgba(211,84,0,.12);color:var(--orange);border:1px solid rgba(211,84,0,.3)">Compras · Técnico · Gerencias</div>
+      <div class="dash-title">MONITOR DE MATERIAS PRIMAS + PETRÓLEO</div>
+      <div class="dash-desc">Precios internacionales en USD/Tn de todas las materias primas clave de Teknal. Serie enero → diciembre 2026 con datos reales y proyección. Incluye IPC INDEC, Dólar BNA, FADEEAC (fletes), WTI (flete internacional) y precios de referencia sectorial: novillo (IMAC), leche (CIGLEA) y capón (PORMAG). Marca visual del inicio de la guerra en el Estrecho de Ormuz (9-Mar-2026) que disparó los costos de importación.</div>
+      <div class="dash-meta">
+        <span class="dash-freq">⟳ Actualización semanal · USD/Tn</span>
+        <span class="dash-arrow">→</span>
+      </div>
+    </a>
+
+    <!-- 2. TASAS -->
+    <a class="dash-card" href="teknal-tasas-dashboard.html" style="--accent-color:var(--blue)">
+      <div class="dash-card-bg-num">02</div>
+      <div class="dash-icon">📊</div>
+      <div class="dash-tag" style="background:rgba(36,113,163,.12);color:var(--blue);border:1px solid rgba(36,113,163,.3)">Finanzas · Directorio</div>
+      <div class="dash-title">TASAS & MACRO ARGENTINA</div>
+      <div class="dash-desc">Tasas de interés bancarias, inflación, tipo de cambio, riesgo país y tasa ARCA de financiamiento. Comparativa mayo 2025 vs mayo 2026. Incluye referencia a la FED y contexto internacional. Esencial para decisiones de financiamiento.</div>
+      <div class="dash-meta">
+        <span class="dash-freq">⟳ Actualización semanal</span>
+        <span class="dash-arrow">→</span>
+      </div>
+    </a>
+
+    <!-- 3. SECTORES ARG -->
+    <a class="dash-card" href="argentina-sectores-dashboard.html" style="--accent-color:var(--green)">
+      <div class="dash-card-bg-num">03</div>
+      <div class="dash-icon">🌾</div>
+      <div class="dash-tag" style="background:rgba(39,174,96,.12);color:var(--green);border:1px solid rgba(39,174,96,.3)">Directorio · Inversión</div>
+      <div class="dash-title">SECTORES ESTRATÉGICOS ARGENTINA</div>
+      <div class="dash-desc">Panorama de los 4 sectores de mayor atractivo inversor: Agro, Hidrocarburos (Vaca Muerta), Minería (RIGI, litio, cobre) e IT. Exportaciones, PBI, crecimiento y comparativa sectorial. Serie histórica 2005-2026.</div>
+      <div class="dash-meta">
+        <span class="dash-freq">⟳ Actualización semanal</span>
+        <span class="dash-arrow">→</span>
+      </div>
+    </a>
+
+    <!-- 4. COMPETIDORES -->
+    <a class="dash-card" href="teknal-competidores-nutricion-animal.html" style="--accent-color:var(--red)">
+      <div class="dash-card-bg-num">04</div>
+      <div class="dash-icon">🏆</div>
+      <div class="dash-tag" style="background:rgba(192,57,43,.12);color:var(--red);border:1px solid rgba(192,57,43,.3)">Directorio · Confidencial</div>
+      <div class="dash-title">BENCHMARK COMPETIDORES NUTRICIÓN ANIMAL</div>
+      <div class="dash-desc">Análisis comparativo de los 10 principales competidores en nutrición animal Argentina: Provimi, Biofarma, Nutrifarms, GEPSA (en crisis), ACA, Bioter, Nutrefeed y más. Facturación, dotación, equipo técnico, red de distribución y market share por unidad de negocio.</div>
+      <div class="dash-meta">
+        <span class="dash-freq">⟳ Actualización mensual · Confidencial</span>
+        <span class="dash-arrow">→</span>
+      </div>
+    </a>
+
+    <!-- 5. IA -->
+    <a class="dash-card" href="teknal-ai-dashboard.html" style="--accent-color:#00d4f5">
+      <div class="dash-card-bg-num">05</div>
+      <div class="dash-icon">🤖</div>
+      <div class="dash-tag" style="background:rgba(0,212,245,.1);color:#00d4f5;border:1px solid rgba(0,212,245,.25)">Directorio · Estrategia</div>
+      <div class="dash-title">PANORAMA INTELIGENCIA ARTIFICIAL</div>
+      <div class="dash-desc">Últimas actualizaciones del mundo de la IA: nuevos modelos (GPT-5.5, Gemini, Claude), agentes autónomos, regulación global y tendencias de industria. Reporte ejecutivo para directorio con ticker de noticias en tiempo real.</div>
+      <div class="dash-meta">
+        <span class="dash-freq">⟳ Generado con IA · Semanal</span>
+        <span class="dash-arrow">→</span>
+      </div>
+    </a>
+
+    <!-- 6. CARRERAS -->
+    <a class="dash-card" href="carreras-en-auge-2026.html" style="--accent-color:var(--purple)">
+      <div class="dash-card-bg-num">06</div>
+      <div class="dash-icon">🎓</div>
+      <div class="dash-tag" style="background:rgba(125,60,152,.12);color:var(--purple);border:1px solid rgba(125,60,152,.3)">RRHH · Estrategia · Personal</div>
+      <div class="dash-title">CARRERAS EN AUGE EN EL MUNDO</div>
+      <div class="dash-desc">Las profesiones con mayor crecimiento, demanda y salario globalmente en 2026. Tech, IA, salud y energía verde. Basado en WEF Future of Jobs 2025, BLS y LinkedIn. Útil para estrategia de talento y reclutamiento.</div>
+      <div class="dash-meta">
+        <span class="dash-freq">⟳ Actualización anual · WEF 2025</span>
+        <span class="dash-arrow">→</span>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+<footer>
+  <span>TEKNAL · INTELLIGENCE HUB · <span id="year"></span></span>
+  <span id="gen"></span>
+</footer>
+
+<script>
+const now = new Date();
+document.getElementById('ts').textContent =
+  now.toLocaleDateString('es-MX',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).toUpperCase();
+document.getElementById('year').textContent = now.getFullYear();
+document.getElementById('gen').textContent =
+  'Actualizado: ' + now.toLocaleDateString('es-MX',{day:'numeric',month:'long',year:'numeric'}).toUpperCase();
+</script>
+</body>
+</html>
