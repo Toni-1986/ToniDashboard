@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ABASTO · Monitor de Precios de Hacienda · San Juan 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root{
+  --bg:#06080a;--card:#0c1008;--border:#182015;
+  --gold:#e8b84b;--green:#27ae60;--red:#c0392b;--blue:#2471a3;
+  --orange:#d35400;--teal:#148f77;--brown:#7d5a2a;
+  --text:#d5edd5;--muted:#3d5040;--muted2:#556050;
+  --c1:#27ae60;  /* novillo super premium */
+  --c2:#2ecc71;  /* vaquillona super premium */
+  --c3:#f39c12;  /* novillo overo */
+  --c4:#e74c3c;  /* vacas manufactura */
+  --c5:#9b59b6;  /* capón cerdo */
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(39,174,96,.012) 1px,transparent 1px),linear-gradient(90deg,rgba(39,174,96,.012) 1px,transparent 1px);background-size:36px 36px;pointer-events:none;z-index:0}
+
+header{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:13px 28px;border-bottom:1px solid var(--border);background:rgba(6,8,10,.98)}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:5px;color:var(--gold);text-shadow:0 0 18px rgba(232,184,75,.3)}
+.logo span{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted2);letter-spacing:2px;margin-left:10px}
+.hright{display:flex;align-items:center;gap:16px}
+.live{display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--green);text-transform:uppercase}
+.ldot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.ts{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted2)}
+
+.intro{position:relative;z-index:5;display:flex;align-items:flex-end;justify-content:space-between;gap:32px;padding:18px 28px 14px;border-bottom:1px solid var(--border);background:rgba(10,14,8,.85)}
+.intro-eyebrow{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--green);text-transform:uppercase;margin-bottom:6px}
+.intro-title{font-family:'Bebas Neue',sans-serif;font-size:34px;letter-spacing:1px;line-height:1;color:var(--text)}
+.intro-title span{color:var(--gold)}
+.intro-sub{font-size:12px;color:#4a6045;line-height:1.65;margin-top:7px;max-width:600px}
+.intro-right{flex-shrink:0;text-align:right}
+.intro-tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:4px 12px;border:1px solid rgba(39,174,96,.35);color:var(--green);background:rgba(39,174,96,.06);margin-bottom:6px}
+.intro-meta{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted2);letter-spacing:1px;text-transform:uppercase;line-height:1.9}
+
+/* TICKER */
+.ticker{position:relative;z-index:5;display:flex;align-items:center;border-bottom:1px solid var(--border);background:rgba(10,14,8,.97);overflow:hidden;height:32px}
+.tlabel{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--gold);background:rgba(232,184,75,.07);border-right:1px solid var(--border);padding:0 14px;height:100%;display:flex;align-items:center;white-space:nowrap;flex-shrink:0}
+.tscroll{display:flex;gap:44px;animation:scroll 50s linear infinite;white-space:nowrap;padding:0 20px}
+@keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.ti{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted2)}
+.ti b{color:var(--text)}.ti.up b{color:var(--red)}.ti.dn b{color:var(--green)}
+
+/* KPI */
+.kpi-row{position:relative;z-index:5;display:grid;grid-template-columns:repeat(5,1fr);border-bottom:2px solid var(--border)}
+.kpi{padding:11px 14px;border-right:1px solid var(--border)}
+.kpi:last-child{border-right:none}
+.kpi-lbl{font-family:'JetBrains Mono',monospace;font-size:7.5px;color:var(--muted2);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:3px}
+.kpi-val{font-family:'Bebas Neue',sans-serif;font-size:26px;line-height:1}
+.kpi-delta{font-family:'JetBrains Mono',monospace;font-size:8.5px;margin-top:2px}
+.go{color:var(--gold)}.g{color:var(--green)}.r{color:var(--red)}.b{color:var(--blue)}.o{color:var(--orange)}.p{color:#9b59b6}
+.up{color:var(--red)}.dn{color:var(--green)}.neu{color:var(--muted2)}
+
+main{position:relative;z-index:5;padding:16px 28px 36px}
+.slbl{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:2.5px;color:var(--muted2);text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.slbl::after{content:'';flex:1;height:1px;background:var(--border)}
+.slbl-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:8px}
+.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:8px}
+
+.card{background:var(--card);border:1px solid var(--border);padding:13px 15px;position:relative;overflow:hidden;transition:border-color .2s}
+.card:hover{border-color:rgba(39,174,96,.3)}
+.card-title{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--muted2);text-transform:uppercase;margin-bottom:9px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px}
+
+/* Precio card */
+.pc{background:var(--card);border:1px solid var(--border);padding:16px;position:relative;overflow:hidden;transition:border-color .2s,transform .15s}
+.pc:hover{transform:translateY(-2px);border-color:rgba(232,184,75,.3)}
+.pc-stripe{position:absolute;top:0;left:0;right:0;height:3px}
+.pc-cat{font-family:'JetBrains Mono',monospace;font-size:7.5px;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;display:inline-block;padding:2px 8px;border-radius:2px}
+.pc-nombre{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:.5px;line-height:1.15;color:var(--text);margin-bottom:2px}
+.pc-detalle{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted2);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px}
+
+.precio-row{display:flex;gap:8px;margin-bottom:6px}
+.precio-box{flex:1;text-align:center;padding:8px 4px;background:rgba(255,255,255,.03);border-radius:3px;border:1px solid var(--border)}
+.precio-lbl{font-family:'JetBrains Mono',monospace;font-size:7px;color:var(--muted2);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:3px}
+.precio-val{font-family:'Bebas Neue',sans-serif;font-size:20px;line-height:1}
+.precio-usd{font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--muted2);margin-top:2px}
+
+.pc-insight{font-size:10px;color:#4a6045;line-height:1.6;border-top:1px solid var(--border);padding-top:7px;margin-top:6px}
+
+.mt{width:100%;border-collapse:collapse;font-size:10px}
+.mt th{font-family:'JetBrains Mono',monospace;font-size:7.5px;letter-spacing:1.5px;color:var(--muted2);text-transform:uppercase;padding:0 0 5px;text-align:right;font-weight:400}
+.mt th:first-child{text-align:left}
+.mt td{padding:4px 0;border-top:1px solid var(--border);text-align:right;font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--text)}
+.mt td:first-child{text-align:left;color:var(--muted2);font-family:'DM Sans',sans-serif;font-size:10.5px}
+.mt tr.hi td{color:var(--gold)}
+.vu{color:var(--red)}.vd{color:var(--green)}.vn{color:var(--muted2)}
+
+.alert{border-left:2px solid var(--gold);background:rgba(232,184,75,.05);padding:7px 10px;margin-top:7px;font-size:10px;line-height:1.6;color:var(--muted2)}
+.alert strong{color:var(--gold)}
+.alert.g{border-color:var(--green);background:rgba(39,174,96,.05)}.alert.g strong{color:var(--green)}
+.alert.r{border-color:var(--red);background:rgba(192,57,43,.05)}.alert.r strong{color:var(--red)}
+
+.leg{display:flex;flex-wrap:wrap;gap:8px}
+.leg-item{display:flex;align-items:center;gap:4px;font-family:'JetBrains Mono',monospace;font-size:7.5px;color:var(--muted2)}
+.leg-sq{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+.leg-line{width:16px;height:2px;border-radius:2px;flex-shrink:0}
+
+footer{position:relative;z-index:5;display:flex;justify-content:space-between;align-items:center;padding:11px 28px;border-top:1px solid var(--border);background:rgba(6,8,10,.98);margin-top:4px}
+footer span{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted2);letter-spacing:1px}
+</style>
+</head>
+<body>
+
+<header>
+  <span class="logo">ABASTO<span>· MONITOR HACIENDA · SAN JUAN · 2026</span></span>
+  <div class="hright">
+    <div class="live"><div class="ldot"></div>MAG Cañuelas · 3-Jun-2026</div>
+    <div class="ts" id="ts"></div>
+  </div>
+</header>
+
+<div class="intro">
+  <div>
+    <div class="intro-eyebrow">◆ Monitor de compras · Hacienda en pie · Faena · Exportaciones · Jun 2026</div>
+    <div class="intro-title">MONITOR DE HACIENDA<br><span>& FAENA 2026</span></div>
+    <div class="intro-sub">Precios de referencia del mercado argentino de hacienda en pie para faena. Datos del Mercado Agroganadero de Cañuelas (MAG) actualizados al 3 de junio de 2026. Proveedores principales: De Campo a Campo y comisionistas del sur de Córdoba. Faena: Frideza. Categorías: Novillo feedlot / Vaquillona / Novillo Overo / Vacas y Toros manufactura / Capón porcino.</div>
+  </div>
+  <div class="intro-right">
+    <div class="intro-tag">Uso interno · Abasto San Juan</div>
+    <div class="intro-meta">Fuente: MAG Cañuelas · 3-Jun-2026<br>TC BNA: $1.408/USD<br>Frideza · De Campo a Campo</div>
+  </div>
+</div>
+
+<div class="ticker">
+  <div class="tlabel">◆ HOY MAG</div>
+  <div class="tscroll">
+    <div class="ti up">◆ <b>INMAG</b> $4.233/kg vivo (−2,2% vs ant.) · Novillo exportación referencia</div>
+    <div class="ti">◆ <b>Novillito EyB 300/390 kg</b> Mín $3.400 · Máx $5.200 · Prom $4.739 · Hoy Cañuelas</div>
+    <div class="ti">◆ <b>Novillo Mest. 431/460 kg</b> Mín $3.800 · Máx $4.400 · Prom $4.195 · 235 cabezas</div>
+    <div class="ti">◆ <b>Vaquillona EyB 270/390 kg</b> Mín $2.900 · Máx $5.500 · Prom $4.454 · 727 cab.</div>
+    <div class="ti">◆ <b>Novillo Overo</b> Mín $3.500 · Máx $3.900 · Prom $3.695 · 30 cab.</div>
+    <div class="ti">◆ <b>Vacas Buenas</b> Mín $1.600 · Máx $4.200 · Prom $2.851 · 788 cab.</div>
+    <div class="ti">◆ <b>Toros Buenos</b> Mín $1.900 · Máx $3.400 · Prom $2.768 · 214 cab.</div>
+    <div class="ti up">◆ <b>Exportaciones carne</b> Q1-26: U$S 1.070M (+52,9% interanual) · China: 61% de los embarques</div>
+    <div class="ti up">◆ <b>INMAG</b> $4.233/kg vivo (−2,2% vs ant.) · Novillo exportación referencia</div>
+    <div class="ti">◆ <b>Novillito EyB 300/390 kg</b> Mín $3.400 · Máx $5.200 · Prom $4.739 · Hoy Cañuelas</div>
+    <div class="ti">◆ <b>Vaquillona EyB 270/390 kg</b> Mín $2.900 · Máx $5.500 · Prom $4.454 · 727 cab.</div>
+    <div class="ti up">◆ <b>Precio exportación promedio</b> U$S 6.968/Tn (abr-26) · +37,7% vs abr-25</div>
+  </div>
+</div>
+
+<div class="kpi-row">
+  <div class="kpi"><div class="kpi-lbl">INMAG · Novillo ref. hoy</div><div class="kpi-val go">$4.233</div><div class="kpi-delta up">↑ ARS/kg vivo · MAG 3-jun</div></div>
+  <div class="kpi"><div class="kpi-lbl">Novillo feed. 380-420 kg (est.)</div><div class="kpi-val g">$4.450</div><div class="kpi-delta up">↑ ~USD 3,16/kg vivo</div></div>
+  <div class="kpi"><div class="kpi-lbl">Vaquillona 350-390 kg (est.)</div><div class="kpi-val g">$4.200</div><div class="kpi-delta up">↑ ~USD 2,98/kg vivo</div></div>
+  <div class="kpi"><div class="kpi-lbl">Capón cerdo 120 kg (est.)</div><div class="kpi-val p">$3.900</div><div class="kpi-delta up">↑ ~USD 2,77/kg vivo</div></div>
+  <div class="kpi"><div class="kpi-lbl">TC BNA referencia</div><div class="kpi-val go">$1.408</div><div class="kpi-delta neu">ARS/USD · May-26</div></div>
+</div>
+
+<main>
+
+<!-- PRECIOS POR CATEGORÍA -->
+<div class="slbl" style="margin-top:4px"><div class="slbl-dot" style="background:var(--green)"></div>Precios por categoría · MAG Cañuelas · 3 Jun 2026 · ARS/kg vivo · 80% de compra</div>
+<div class="g2">
+
+  <!-- Novillo super premium feedlot -->
+  <div class="pc" style="border-color:rgba(39,174,96,.4)">
+    <div class="pc-stripe" style="background:var(--c1)"></div>
+    <div class="pc-cat" style="background:rgba(39,174,96,.1);color:var(--c1);border:1px solid rgba(39,174,96,.3)">80% de compra · Super Premium</div>
+    <div class="pc-nombre">NOVILLO FEEDLOT TERMINADO</div>
+    <div class="pc-detalle">380 a 420 kg · Mestizo EyB · Referencia: categoría 431/460 kg MAG</div>
+    <div class="precio-row">
+      <div class="precio-box">
+        <div class="precio-lbl">Mínimo</div>
+        <div class="precio-val" style="color:var(--green)">$3.800</div>
+        <div class="precio-usd">~U$S 2,70/kg</div>
+      </div>
+      <div class="precio-box">
+        <div class="precio-lbl">Promedio</div>
+        <div class="precio-val" style="color:var(--gold)">$4.450</div>
+        <div class="precio-usd">~U$S 3,16/kg</div>
+      </div>
+      <div class="precio-box">
+        <div class="precio-lbl">Máximo</div>
+        <div class="precio-val" style="color:var(--red)">$4.400</div>
+        <div class="precio-usd">~U$S 3,12/kg</div>
+      </div>
+      <div class="precio-box">
+        <div class="precio-lbl">Mediana</div>
+        <div class="precio-val">$4.300</div>
+        <div class="precio-usd">~U$S 3,05/kg</div>
+      </div>
+    </div>
+    <table class="mt">
+      <thead><tr><th>Peso animal</th><th>Costo animal (ARS)</th><th>Costo (USD)</th><th>Rinde carcasa est.</th></tr></thead>
+      <tbody>
+        <tr><td>380 kg (mínimo)</td><td>$1.691.000</td><td>~U$S 1.201</td><td>~224 kg res (59%)</td></tr>
+        <tr class="hi"><td>400 kg (típico)</td><td>$1.780.000</td><td>~U$S 1.264</td><td>~236 kg res (59%)</td></tr>
+        <tr><td>420 kg (máximo)</td><td>$1.869.000</td><td>~U$S 1.328</td><td>~248 kg res (59%)</td></tr>
+      </tbody>
+    </table>
+    <div class="pc-insight">Categoría más demandada del abasto. Feedlot terminado garantiza conformación y engrasamiento uniforme. Rinde carcasa: <strong style="color:var(--green)">59%</strong>. Proveedores: De Campo a Campo + comisionistas sur Córdoba (Marcos Juárez, Río Cuarto).</div>
+  </div>
+
+  <!-- Vaquillona super premium -->
+  <div class="pc" style="border-color:rgba(46,204,113,.4)">
+    <div class="pc-stripe" style="background:var(--c2)"></div>
+    <div class="pc-cat" style="background:rgba(46,204,113,.1);color:var(--c2);border:1px solid rgba(46,204,113,.3)">80% de compra · Super Premium</div>
+    <div class="pc-nombre">VAQUILLONA FEEDLOT TERMINADA</div>
+    <div class="pc-detalle">350 a 390 kg · EyB · Referencia: Vaquillona EyB 391/430 kg MAG</div>
+    <div class="precio-row">
+      <div class="precio-box">
+        <div class="precio-lbl">Mínimo</div>
+        <div class="precio-val" style="color:var(--green)">$3.000</div>
+        <div class="precio-usd">~U$S 2,13/kg</div>
+      </div>
+      <div class="precio-box">
+        <div class="precio-lbl">Promedio</div>
+        <div class="precio-val" style="color:var(--gold)">$4.200</div>
+        <div class="precio-usd">~U$S 2,98/kg</div>
+      </div>
+      <div class="precio-box">
+        <div class="precio-lbl">Máximo</div>
+        <div class="precio-val" style="color:var(--red)">$4.300</div>
+        <div class="precio-usd">~U$S 3,05/kg</div>
+      </div>
+      <div class="precio-box">
+        <div class="precio-lbl">Mediana</div>
+        <div class="precio-val">$3.800</div>
+        <div class="precio-usd">~U$S 2,70/kg</div>
+      </div>
+    </div>
+    <table class="mt">
+      <thead><tr><th>Peso animal</th><th>Costo animal (ARS)</th><th>Costo (USD)</th><th>Rinde carcasa est.</th></tr></thead>
+      <tbody>
+        <tr><td>350 kg (mínimo)</td><td>$1.470.000</td><td>~U$S 1.044</td><td>~196 kg res</td></tr>
+        <tr class="hi"><td>370 kg (típico)</td><td>$1.554.000</td><td>~U$S 1.104</td><td>~207 kg res</td></tr>
+        <tr><td>390 kg (máximo)</td><td>$1.638.000</td><td>~U$S 1.163</td><td>~218 kg res</td></tr>
+      </tbody>
+    </table>
+    <div class="pc-insight">Rinde carcasa típico vaquillona: 54-56%. Carne de alta terneza y grasa intramuscular. Precio algo menor al novillo. Conformación uniforme en feedlot. Opción para cortes premium del abasto.</div>
+  </div>
+
+</div>
+
+<!-- 20% DE COMPRA -->
+<div class="slbl" style="margin-top:8px"><div class="slbl-dot" style="background:var(--orange)"></div>Precios por categoría · MAG Cañuelas · 3 Jun 2026 · ARS/kg vivo · 20% de compra</div>
+<div class="g3">
+
+  <!-- Novillo Overo -->
+  <div class="pc" style="border-color:rgba(243,156,18,.4)">
+    <div class="pc-stripe" style="background:var(--c3)"></div>
+    <div class="pc-cat" style="background:rgba(243,156,18,.1);color:var(--c3);border:1px solid rgba(243,156,18,.3)">20% de compra · Premium</div>
+    <div class="pc-nombre">NOVILLO OVERO PREMIUM</div>
+    <div class="pc-detalle">400 a 430 kg · Jóvenes · Ref: Novillos Overos N. MAG</div>
+    <div class="precio-row">
+      <div class="precio-box"><div class="precio-lbl">Mínimo</div><div class="precio-val" style="color:var(--green)">$3.500</div><div class="precio-usd">~U$S 2,49/kg</div></div>
+      <div class="precio-box"><div class="precio-lbl">Promedio</div><div class="precio-val" style="color:var(--gold)">$3.695</div><div class="precio-usd">~U$S 2,62/kg</div></div>
+      <div class="precio-box"><div class="precio-lbl">Máximo</div><div class="precio-val" style="color:var(--red)">$3.900</div><div class="precio-usd">~U$S 2,77/kg</div></div>
+    </div>
+    <div class="pc-insight">Menor precio que el mestizo por la raza overa. Buena conformación en animales jóvenes (2 dientes). Rinde carcasa: <strong style="color:var(--gold)">57,5%</strong>. Opción para cortes de abasto masivo.</div>
+    <table class="mt" style="margin-top:8px">
+      <thead><tr><th>Peso</th><th>Costo ARS</th><th>Costo USD</th><th>Res (57,5%)</th></tr></thead>
+      <tbody>
+        <tr><td>400 kg típico</td><td>$1.478.000</td><td>~U$S 1.050</td><td>~230 kg</td></tr>
+        <tr class="hi"><td>415 kg medio</td><td>$1.533.000</td><td>~U$S 1.089</td><td>~239 kg</td></tr>
+        <tr><td>430 kg máximo</td><td>$1.588.500</td><td>~U$S 1.128</td><td>~247 kg</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Vacas manufactura -->
+  <div class="pc" style="border-color:rgba(231,76,60,.4)">
+    <div class="pc-stripe" style="background:var(--c4)"></div>
+    <div class="pc-cat" style="background:rgba(231,76,60,.1);color:var(--c4);border:1px solid rgba(231,76,60,.3)">20% de compra · Manufactura</div>
+    <div class="pc-nombre">VACAS & TOROS MANUFACTURA</div>
+    <div class="pc-detalle">Manufactura · Embutidos · Ref: Vacas Buenas + Toros Buenos MAG</div>
+    <div class="precio-row">
+      <div class="precio-box"><div class="precio-lbl">Vaca mín.</div><div class="precio-val" style="color:var(--green)">$1.600</div><div class="precio-usd">~U$S 1,14/kg</div></div>
+      <div class="precio-box"><div class="precio-lbl">Vaca prom.</div><div class="precio-val" style="color:var(--gold)">$2.851</div><div class="precio-usd">~U$S 2,02/kg</div></div>
+      <div class="precio-box"><div class="precio-lbl">Toro prom.</div><div class="precio-val" style="color:var(--orange)">$2.768</div><div class="precio-usd">~U$S 1,97/kg</div></div>
+    </div>
+    <div class="pc-insight">Destino manufactura/embutidos. Mayor variación de precios que el ganado gordo. Vacas buenas: $2.851 prom. Toros buenos: $2.768 prom. Alto volumen por animal (450-600 kg). Menor valor unitario pero buen rendimiento en carne industrial.</div>
+    <table class="mt" style="margin-top:8px">
+      <thead><tr><th>Categoría</th><th>Mínimo</th><th>Promedio</th><th>Máximo</th></tr></thead>
+      <tbody>
+        <tr><td>Vacas Buenas</td><td class="vd">$1.600</td><td class="go">$2.851</td><td class="vu">$4.200</td></tr>
+        <tr><td>Vacas Conserva</td><td class="vd">$1.900</td><td>$2.259</td><td class="vu">$2.600</td></tr>
+        <tr class="hi"><td>Toros Buenos</td><td class="vd">$1.900</td><td class="go">$2.768</td><td class="vu">$3.400</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Capones porcinos -->
+  <div class="pc" style="border-color:rgba(155,89,182,.4)">
+    <div class="pc-stripe" style="background:var(--c5)"></div>
+    <div class="pc-cat" style="background:rgba(155,89,182,.1);color:var(--c5);border:1px solid rgba(155,89,182,.3)">Porcinos · Capones</div>
+    <div class="pc-nombre">CAPÓN PORCINO 120 KG</div>
+    <div class="pc-detalle">Capones 120 kg · Referencia: PORMAG · Mercado porcino ARG</div>
+    <div class="precio-row">
+      <div class="precio-box"><div class="precio-lbl">Mínimo</div><div class="precio-val" style="color:var(--green)">$3.500</div><div class="precio-usd">~U$S 2,49/kg</div></div>
+      <div class="precio-box"><div class="precio-lbl">Promedio</div><div class="precio-val" style="color:var(--gold)">$3.900</div><div class="precio-usd">~U$S 2,77/kg</div></div>
+      <div class="precio-box"><div class="precio-lbl">Máximo</div><div class="precio-val" style="color:var(--red)">$4.200</div><div class="precio-usd">~U$S 2,98/kg</div></div>
+    </div>
+    <div class="pc-insight">Capón de 120 kg: rendimiento carcasa ~78-80%. Precio más estable que bovinos. Sector porcino crece +15%/año. Costo típico por animal: ~$468.000 ARS (U$S 332). Rinde: ~94 kg de carne en carcasa.</div>
+    <table class="mt" style="margin-top:8px">
+      <thead><tr><th>Indicador</th><th>Valor</th></tr></thead>
+      <tbody>
+        <tr><td>Peso vivo</td><td>120 kg</td></tr>
+        <tr><td>Costo prom. por animal</td><td class="go">~$468.000 ARS</td></tr>
+        <tr><td>Equivalente USD</td><td>~U$S 332/animal</td></tr>
+        <tr class="hi"><td>Rendimiento carcasa</td><td>~78-80% (~94 kg)</td></tr>
+        <tr><td>Costo por kg carcasa</td><td>~$4.978 ARS</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- COSTO / VENTA / PUNTO DE EQUILIBRIO -->
+<div class="slbl" style="margin-top:8px"><div class="slbl-dot" style="background:var(--gold)"></div>Costo · Venta · Punto de equilibrio · Por animal · Datos reales Frideza Jun-2026</div>
+<div class="g3">
+
+  <!-- NOVILLO FEEDLOT -->
+  <div class="card" style="border-top:3px solid var(--c1)">
+    <div class="card-title"><span>🐄 Novillo feedlot · 400 kg vivo · 59% rinde</span></div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px">
+      <div style="background:rgba(192,57,43,.07);border:1px solid rgba(192,57,43,.2);padding:8px;border-radius:2px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:7.5px;color:var(--red);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px">COSTO PUESTO</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--red);line-height:1">$1.850.400</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted2);margin-top:2px">~U$S 1.314 · animal + faena</div>
+      </div>
+      <div style="background:rgba(39,174,96,.07);border:1px solid rgba(39,174,96,.2);padding:8px;border-radius:2px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:7.5px;color:var(--green);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px">INGRESO VENTA</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--green);line-height:1">$2.539.440</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted2);margin-top:2px">~U$S 1.803 · 236 kg × $10.800</div>
+      </div>
+    </div>
+
+    <table class="mt">
+      <thead><tr><th>Concepto</th><th>ARS</th><th>USD</th></tr></thead>
+      <tbody>
+        <tr><td>Animal en pie (400 kg × $4.450)</td><td class="vu">$1.780.000</td><td class="vu">U$S 1.264</td></tr>
+        <tr><td>Faena Frideza</td><td class="vu">$70.400</td><td class="vu">U$S 50</td></tr>
+        <tr class="hi"><td>COSTO TOTAL (puesto)</td><td class="vu">$1.850.400</td><td class="vu">U$S 1.314</td></tr>
+        <tr><td>Res carcasa (236 kg × $10.800)</td><td class="vd">$2.548.800</td><td class="vd">U$S 1.810</td></tr>
+        <tr><td>10% góndola (margen adicional)</td><td class="vd">+$50.000 est.</td><td class="vd">+U$S 35</td></tr>
+        <tr class="hi"><td>INGRESO ESTIMADO</td><td class="vd">~$2.598.800</td><td class="vd">~U$S 1.845</td></tr>
+        <tr><td style="color:var(--gold);font-weight:600">MARGEN BRUTO</td><td style="color:var(--gold);font-weight:600">~$748.400</td><td style="color:var(--gold)">~U$S 531</td></tr>
+        <tr><td>Margen bruto %</td><td colspan="2" style="color:var(--gold);text-align:right;font-weight:600">~40,5% sobre costo</td></tr>
+      </tbody>
+    </table>
+    <div class="alert g" style="margin-top:8px"><strong>Punto de equilibrio:</strong> Con costo de $1.850.400 y precio venta $10.800/kg, necesita vender al menos <strong style="color:var(--text)">171 kg de res</strong> (72% del animal) para cubrir costos. Los 65 kg restantes son ganancia.</div>
+  </div>
+
+  <!-- VAQUILLONA -->
+  <div class="card" style="border-top:3px solid var(--c2)">
+    <div class="card-title"><span>🐄 Vaquillona feedlot · 370 kg vivo · 57,5% rinde</span></div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px">
+      <div style="background:rgba(192,57,43,.07);border:1px solid rgba(192,57,43,.2);padding:8px;border-radius:2px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:7.5px;color:var(--red);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px">COSTO PUESTO</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--red);line-height:1">$1.624.400</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted2);margin-top:2px">~U$S 1.153 · animal + faena</div>
+      </div>
+      <div style="background:rgba(39,174,96,.07);border:1px solid rgba(39,174,96,.2);padding:8px;border-radius:2px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:7.5px;color:var(--green);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px">INGRESO VENTA</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--green);line-height:1">$2.299.500</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted2);margin-top:2px">~U$S 1.633 · 213 kg × $10.800</div>
+      </div>
+    </div>
+
+    <table class="mt">
+      <thead><tr><th>Concepto</th><th>ARS</th><th>USD</th></tr></thead>
+      <tbody>
+        <tr><td>Animal en pie (370 kg × $4.200)</td><td class="vu">$1.554.000</td><td class="vu">U$S 1.103</td></tr>
+        <tr><td>Faena Frideza</td><td class="vu">$70.400</td><td class="vu">U$S 50</td></tr>
+        <tr class="hi"><td>COSTO TOTAL (puesto)</td><td class="vu">$1.624.400</td><td class="vu">U$S 1.153</td></tr>
+        <tr><td>Res carcasa (213 kg × $10.800)</td><td class="vd">$2.300.400</td><td class="vd">U$S 1.634</td></tr>
+        <tr><td>10% góndola (margen adicional)</td><td class="vd">+$45.000 est.</td><td class="vd">+U$S 32</td></tr>
+        <tr class="hi"><td>INGRESO ESTIMADO</td><td class="vd">~$2.345.400</td><td class="vd">~U$S 1.666</td></tr>
+        <tr><td style="color:var(--gold);font-weight:600">MARGEN BRUTO</td><td style="color:var(--gold);font-weight:600">~$721.000</td><td style="color:var(--gold)">~U$S 512</td></tr>
+        <tr><td>Margen bruto %</td><td colspan="2" style="color:var(--gold);text-align:right;font-weight:600">~44,4% sobre costo</td></tr>
+      </tbody>
+    </table>
+    <div class="alert g" style="margin-top:8px"><strong>Punto de equilibrio:</strong> Necesita vender <strong style="color:var(--text)">150 kg de res</strong> (71% del animal) para cubrir costos. La vaquillona tiene <strong style="color:var(--gold)">mejor margen %</strong> que el novillo por menor precio de compra.</div>
+  </div>
+
+  <!-- CAPÓN PORCINO -->
+  <div class="card" style="border-top:3px solid var(--c5)">
+    <div class="card-title"><span>🐷 Capón porcino · 120 kg vivo · 79% rinde</span></div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px">
+      <div style="background:rgba(192,57,43,.07);border:1px solid rgba(192,57,43,.2);padding:8px;border-radius:2px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:7.5px;color:var(--red);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px">COSTO PUESTO</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--red);line-height:1">$538.400</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted2);margin-top:2px">~U$S 382 · animal + faena</div>
+      </div>
+      <div style="background:rgba(39,174,96,.07);border:1px solid rgba(39,174,96,.2);padding:8px;border-radius:2px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:7.5px;color:var(--green);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px">INGRESO VENTA</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--green);line-height:1">$908.550</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted2);margin-top:2px">~U$S 645 · cortes porcinos prom.</div>
+      </div>
+    </div>
+
+    <table class="mt">
+      <thead><tr><th>Concepto</th><th>ARS</th><th>USD</th></tr></thead>
+      <tbody>
+        <tr><td>Animal en pie (120 kg × $3.900)</td><td class="vu">$468.000</td><td class="vu">U$S 332</td></tr>
+        <tr><td>Faena Frideza</td><td class="vu">$70.400</td><td class="vu">U$S 50</td></tr>
+        <tr class="hi"><td>COSTO TOTAL (puesto)</td><td class="vu">$538.400</td><td class="vu">U$S 382</td></tr>
+        <tr><td>Venta cortes porcinos prom. (~$9.600/kg)</td><td class="vd">$908.928</td><td class="vd">U$S 645</td></tr>
+        <tr><td>94 kg carcasa × precio prom. góndola</td><td class="vd">94 kg dist.</td><td class="vd">Frideza</td></tr>
+        <tr class="hi"><td>INGRESO ESTIMADO</td><td class="vd">~$908.928</td><td class="vd">~U$S 645</td></tr>
+        <tr><td style="color:var(--gold);font-weight:600">MARGEN BRUTO</td><td style="color:var(--gold);font-weight:600">~$370.528</td><td style="color:var(--gold)">~U$S 263</td></tr>
+        <tr><td>Margen bruto %</td><td colspan="2" style="color:var(--gold);text-align:right;font-weight:600">~68,8% sobre costo ★</td></tr>
+      </tbody>
+    </table>
+    <div class="alert g" style="margin-top:8px"><strong>Mayor margen:</strong> El capón porcino tiene el <strong style="color:var(--text)">mejor margen bruto</strong> de las tres categorías. Precio promedio de cortes porcinos en lista Frideza: Carré $13.700 · Bondiola $8.500 · Matambrito $16.990.</div>
+  </div>
+
+</div>
+
+<!-- GRÁFICO COMPARATIVO MÁRGENES -->
+<div class="slbl" style="margin-top:8px"><div class="slbl-dot" style="background:var(--gold)"></div>Comparativa de márgenes · Costo vs Ingreso · Por animal · ARS</div>
+<div class="card" style="margin-bottom:8px">
+  <div class="card-title">
+    <span>Costo total vs Ingreso estimado · Por animal · ARS · Jun 2026</span>
+    <div class="leg">
+      <span class="leg-item"><span class="leg-sq" style="background:rgba(192,57,43,.7)"></span>Costo puesto</span>
+      <span class="leg-item"><span class="leg-sq" style="background:rgba(39,174,96,.7)"></span>Ingreso estimado</span>
+      <span class="leg-item"><span class="leg-sq" style="background:rgba(232,184,75,.7)"></span>Margen bruto</span>
+    </div>
+  </div>
+  <div style="position:relative;width:100%;height:220px"><canvas id="chartMargen"></canvas></div>
+</div>
+
+<!-- PRECIOS DE GÓNDOLA KEY CUTS -->
+<div class="slbl" style="margin-top:8px"><div class="slbl-dot" style="background:var(--green)"></div>Precios de venta en góndola · Frideza Río Cuarto · 2 Jun 2026 · ARS/kg con IVA</div>
+<div class="g3">
+  <div class="card">
+    <div class="card-title"><span>Cortes premium · Mayor precio unitario</span></div>
+    <table class="mt">
+      <thead><tr><th>Corte</th><th>ARS/kg</th><th>USD/kg</th></tr></thead>
+      <tbody>
+        <tr class="hi"><td>T-Bone</td><td>$27.500</td><td>U$S 19,5</td></tr>
+        <tr class="hi"><td>Tomahawk</td><td>$27.500</td><td>U$S 19,5</td></tr>
+        <tr><td>Entraña</td><td>$26.990</td><td>U$S 19,2</td></tr>
+        <tr><td>Molleja Premium</td><td>$25.990</td><td>U$S 18,5</td></tr>
+        <tr><td>Lomo</td><td>$24.990</td><td>U$S 17,7</td></tr>
+        <tr><td>Ojo de Bife porcionado</td><td>$21.790</td><td>U$S 15,5</td></tr>
+        <tr><td>Bife de Chorizo porcionado</td><td>$21.790</td><td>U$S 15,5</td></tr>
+        <tr><td>Nalga feteada (porcionada)</td><td>$20.000</td><td>U$S 14,2</td></tr>
+        <tr><td>Ojo de Bife</td><td>$20.990</td><td>U$S 14,9</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="card">
+    <div class="card-title"><span>Cortes de consumo masivo · Referencia abasto</span></div>
+    <table class="mt">
+      <thead><tr><th>Corte</th><th>ARS/kg</th><th>USD/kg</th></tr></thead>
+      <tbody>
+        <tr><td>Asado del Medio</td><td>$16.990</td><td>U$S 12,1</td></tr>
+        <tr><td>Costilla de Ternera</td><td>$16.990</td><td>U$S 12,1</td></tr>
+        <tr><td>Vacío entero</td><td>$18.490</td><td>U$S 13,1</td></tr>
+        <tr><td>Nalga</td><td>$18.500</td><td>U$S 13,1</td></tr>
+        <tr><td>Matambre</td><td>$17.990</td><td>U$S 12,8</td></tr>
+        <tr><td>Picaña</td><td>$19.550</td><td>U$S 13,9</td></tr>
+        <tr><td>Carne Molida</td><td>$12.650</td><td>U$S 8,98</td></tr>
+        <tr><td>Falda Parrillera</td><td>$8.450</td><td>U$S 6,00</td></tr>
+        <tr><td>Costilla Novillo</td><td>$11.990</td><td>U$S 8,52</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="card">
+    <div class="card-title"><span>Cortes porcinos · Referencia Frideza</span></div>
+    <table class="mt">
+      <thead><tr><th>Corte</th><th>ARS/kg</th><th>USD/kg</th></tr></thead>
+      <tbody>
+        <tr class="hi"><td>Matambrito</td><td>$16.990</td><td>U$S 12,1</td></tr>
+        <tr><td>Carré deshuesado</td><td>$13.700</td><td>U$S 9,7</td></tr>
+        <tr><td>Vacío porcino</td><td>$12.950</td><td>U$S 9,2</td></tr>
+        <tr><td>Solomillo</td><td>$8.990</td><td>U$S 6,4</td></tr>
+        <tr><td>Bondiola</td><td>$8.500</td><td>U$S 6,0</td></tr>
+        <tr><td>Jamón sin hueso</td><td>$6.600</td><td>U$S 4,7</td></tr>
+        <tr><td>Paleta sin hueso</td><td>$6.600</td><td>U$S 4,7</td></tr>
+        <tr><td>Costeleta</td><td>$7.490</td><td>U$S 5,3</td></tr>
+        <tr><td>Costilla</td><td>$7.700</td><td>U$S 5,5</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Evolución de precios chart -->
+<div class="slbl" style="margin-top:8px"><div class="slbl-dot" style="background:var(--green)"></div>Evolución de precios · Ene → Jun 2026 · ARS/kg vivo</div>
+<div class="card" style="margin-bottom:8px">
+  <div class="card-title">
+    <span>Evolución precio ARS/kg vivo · Por categoría · Ene → Jun 2026</span>
+    <div class="leg">
+      <span class="leg-item"><span class="leg-line" style="background:var(--c1)"></span>Novillo feedlot</span>
+      <span class="leg-item"><span class="leg-line" style="background:var(--c2)"></span>Vaquillona SP</span>
+      <span class="leg-item"><span class="leg-line" style="background:var(--c3)"></span>Novillo Overo</span>
+      <span class="leg-item"><span class="leg-line" style="background:var(--c4)"></span>Vacas manufact.</span>
+      <span class="leg-item"><span class="leg-line" style="background:var(--c5)"></span>Capón porcino</span>
+    </div>
+  </div>
+  <div style="position:relative;width:100%;height:220px"><canvas id="chartPrecios"></canvas></div>
+  <div class="alert"><strong>Tendencia:</strong> Novillos y vaquillonas en presión alcista por exportaciones récord. Vacas manufactura más estables. Capón porcino sube por mayor demanda en verano.</div>
+</div>
+
+<!-- COMPARATIVO USD + RENDIMIENTOS -->
+<div class="slbl" style="margin-top:8px"><div class="slbl-dot" style="background:var(--blue)"></div>Análisis de costo · USD/kg res fría · Comparativa de categorías</div>
+<div class="g3">
+
+  <div class="card">
+    <div class="card-title"><span>Costo total USD/kg res fría · Por categoría (animal + faena)</span></div>
+    <div style="position:relative;width:100%;height:190px"><canvas id="chartCostoUSD"></canvas></div>
+    <div class="alert g"><strong>Menor costo/kg:</strong> La vaquillona y el novillo overo tienen menor precio de compra pero rinde similar. Manufactura tiene el menor costo/kg carcasa pero destino limitado.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span>Rendimiento carcasa % · Por categoría</span></div>
+    <div style="position:relative;width:100%;height:190px"><canvas id="chartRinde"></canvas></div>
+    <div class="alert"><strong>El novillo feedlot</strong> tiene el mayor rinde relativo al costo de compra. El capón porcino tiene el mayor % de rinde carcasa (78-80%).</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span>Precio hacienda vs IPC · Índice base 100 = Ene 2026</span></div>
+    <div style="position:relative;width:100%;height:190px"><canvas id="chartVsIPC"></canvas></div>
+    <div class="alert r"><strong>Novillos vs inflación:</strong> El precio de la hacienda subió por encima del IPC en el período (+26% vs IPC +12,3%), presionado por exportaciones récord. Impacto directo en costo de compra del abasto.</div>
+  </div>
+
+</div>
+
+<!-- EXPORTACIONES -->
+<div class="slbl" style="margin-top:8px"><div class="slbl-dot" style="background:var(--red)"></div>Exportaciones carne vacuna Argentina · Contexto que impacta en precio local · 2026</div>
+<div class="g2">
+
+  <div class="card" style="border-top:2px solid var(--red)">
+    <div class="card-title">
+      <span>Exportaciones mensuales · USD M · Ene → Abr 2026 + Proyección</span>
+      <div class="leg">
+        <span class="leg-item"><span class="leg-line" style="background:rgba(192,57,43,.9)"></span>USD M (valor)</span>
+        <span class="leg-item"><span class="leg-line" style="background:rgba(36,113,163,.7)"></span>Toneladas (miles)</span>
+      </div>
+    </div>
+    <div style="position:relative;width:100%;height:200px"><canvas id="chartExport"></canvas></div>
+    <div class="alert r"><strong>Efecto exportador en precio local:</strong> Las exportaciones récord (+52,9% vs 2025) reducen la oferta de hacienda local y presionan los precios al alza. Cada tonelada que va a China son animales que no llegan al abasto.</div>
+  </div>
+
+  <div class="card" style="border-top:2px solid var(--red)">
+    <div class="card-title"><span>Destinos de exportación · Participación % · Q1-Q2 2026</span></div>
+    <div style="position:relative;width:100%;height:200px"><canvas id="chartDestinos"></canvas></div>
+    <table class="mt" style="margin-top:10px">
+      <thead><tr><th>Destino</th><th>% embarques</th><th>USD/Tn prom.</th><th>Tendencia</th></tr></thead>
+      <tbody>
+        <tr class="hi"><td>China</td><td>61%</td><td>U$S 4.375</td><td class="vu">↑ Líder</td></tr>
+        <tr><td>Estados Unidos</td><td>15%</td><td>U$S 8.200+</td><td class="vu">↑ +67% (era 9%)</td></tr>
+        <tr><td>Unión Europea</td><td>9%</td><td>U$S 12.000+</td><td class="vn">→ Estable</td></tr>
+        <tr><td>Israel</td><td>5%</td><td>U$S 10.500</td><td class="vn">→ Estable</td></tr>
+        <tr><td>Chile + otros</td><td>10%</td><td>U$S 5.500</td><td class="vn">→ Estable</td></tr>
+      </tbody>
+    </table>
+    <div class="alert"><strong>Precio promedio exportación:</strong> U$S 6.968/Tn (abr-26) — +37,7% vs abr-25. EE.UU. paga el doble que China. Cupo Argentina en China: 700.000 Tn/año — usado 32% a mayo. Brasil usa el 50% de su cuota, lo que puede abrir más demanda hacia fin de año.</div>
+  </div>
+
+</div>
+
+<!-- ALERTAS Y CONTEXTO -->
+<div class="slbl" style="margin-top:8px"><div class="slbl-dot" style="background:var(--gold)"></div>Alertas y contexto · Para decisiones de compra</div>
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+  <div class="card" style="border-top:2px solid var(--red)">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--red);letter-spacing:2px;margin-bottom:8px">🔴 Presión alcista</div>
+    <div style="font-size:11px;color:#4a6045;line-height:1.75">
+      <div>· Exportaciones +52,9% interanual</div>
+      <div>· China usó solo 32% del cupo</div>
+      <div>· Brasil agota cuota antes → más demanda arg.</div>
+      <div>· Consumo local en mínimos históricos: 47,3 kg/hab</div>
+      <div style="margin-top:6px;color:var(--red)">→ Precio novillo seguirá subiendo H2-26</div>
+    </div>
+  </div>
+  <div class="card" style="border-top:2px solid var(--green)">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--green);letter-spacing:2px;margin-bottom:8px">🟢 Oportunidades</div>
+    <div style="font-size:11px;color:#4a6045;line-height:1.75">
+      <div>· Manufactura (vacas/toros): precio relativamente bajo</div>
+      <div>· Capón porcino: precio más estable, rinde alto</div>
+      <div>· Novillito liviano: precio/kg mayor pero menor costo total</div>
+      <div>· Comprar antes de julio (cosecha termina)</div>
+      <div style="margin-top:6px;color:var(--green)">→ Diversificar entre categorías</div>
+    </div>
+  </div>
+  <div class="card" style="border-top:2px solid var(--gold)">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--gold);letter-spacing:2px;margin-bottom:8px">📊 Índices clave</div>
+    <div style="font-size:11px;color:#4a6045;line-height:1.75">
+      <div>· <strong style="color:var(--text)">INMAG hoy:</strong> $4.233/kg</div>
+      <div>· <strong style="color:var(--text)">Precio export. abr:</strong> U$S 6.968/Tn</div>
+      <div>· <strong style="color:var(--text)">TC BNA:</strong> $1.408/USD</div>
+      <div>· <strong style="color:var(--text)">IPC acum. 2026:</strong> 12,3%</div>
+      <div>· <strong style="color:var(--text)">Hacienda sube:</strong> ~+26% en 2026</div>
+    </div>
+  </div>
+  <div class="card" style="border-top:2px solid var(--blue)">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--blue);letter-spacing:2px;margin-bottom:8px">📅 Estacionalidad</div>
+    <div style="font-size:11px;color:#4a6045;line-height:1.75">
+      <div>· Jun-Jul: pico de oferta por fin de cosecha</div>
+      <div>· Ago-Sep: menor oferta → precios más altos</div>
+      <div>· Oct-Nov: recuperación exportadora China</div>
+      <div>· Dic: pico precio ("Gordo de Navidad")</div>
+      <div style="margin-top:6px;color:var(--blue)">→ Mejor momento de compra: Jun-Jul 2026</div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<footer>
+  <span>ABASTO · MONITOR HACIENDA SAN JUAN · 3 JUN 2026 · USO INTERNO</span>
+  <span>MAG CAÑUELAS · CONSORCIO ABC · IPCVA · VALOR CARNE · SENASA · PORMAG · TC BNA $1.408/USD</span>
+</footer>
+
+<script>
+const now = new Date();
+document.getElementById('ts').textContent =
+  now.toLocaleDateString('es-MX',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).toUpperCase();
+
+Chart.defaults.color='#3d5040';
+Chart.defaults.borderColor='#182015';
+Chart.defaults.font.family="'JetBrains Mono',monospace";
+Chart.defaults.font.size=9;
+const tt={backgroundColor:'#0c1008',borderColor:'#182015',borderWidth:1};
+const meses=['Ene','Feb','Mar','Abr','May','Jun*'];
+
+// Gráfico de márgenes
+new Chart(document.getElementById('chartMargen'),{
+  type:'bar',
+  data:{
+    labels:['Novillo feedlot 400kg','Vaquillona 370kg','Capón porcino 120kg'],
+    datasets:[
+      {label:'Costo puesto ARS',data:[1850400,1624400,538400],backgroundColor:'rgba(192,57,43,.7)',borderWidth:0,borderRadius:3},
+      {label:'Ingreso estimado ARS',data:[2598800,2345400,908928],backgroundColor:'rgba(39,174,96,.7)',borderWidth:0,borderRadius:3},
+      {label:'Margen bruto ARS',data:[748400,721000,370528],backgroundColor:'rgba(232,184,75,.7)',borderWidth:0,borderRadius:3},
+    ]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{
+      legend:{display:true,position:'bottom',labels:{color:'#556050',font:{size:8},boxWidth:10,padding:8}},
+      tooltip:{...tt,callbacks:{label:ctx=>' '+ctx.dataset.label+': $'+ctx.parsed.y.toLocaleString()}}
+    },
+    scales:{
+      x:{grid:{color:'rgba(24,32,21,.7)'},ticks:{color:'#556050'}},
+      y:{grid:{color:'rgba(24,32,21,.7)'},ticks:{color:'#556050',callback:v=>'$'+(v/1000000).toFixed(1)+'M'}}
+    }
+  }
+});
+
+// Evolución precios
+new Chart(document.getElementById('chartPrecios'),{
+  type:'line',
+  data:{
+    labels:meses,
+    datasets:[
+      {label:'Novillo feedlot',data:[3500,3700,3900,4100,4300,4450],borderColor:'rgba(39,174,96,.9)',backgroundColor:'rgba(39,174,96,.06)',borderWidth:2.5,fill:true,tension:0.4,pointRadius:3},
+      {label:'Vaquillona SP',data:[3300,3500,3700,3900,4050,4200],borderColor:'rgba(46,204,113,.9)',backgroundColor:'transparent',borderWidth:2,tension:0.4,pointRadius:2},
+      {label:'Novillo Overo',data:[3100,3200,3300,3450,3600,3695],borderColor:'rgba(243,156,18,.9)',backgroundColor:'transparent',borderWidth:2,tension:0.4,pointRadius:2},
+      {label:'Vacas manufactura',data:[2400,2500,2600,2750,2800,2851],borderColor:'rgba(231,76,60,.8)',backgroundColor:'transparent',borderWidth:2,tension:0.4,pointRadius:2},
+      {label:'Capón porcino',data:[3200,3300,3400,3600,3750,3900],borderColor:'rgba(155,89,182,.9)',backgroundColor:'transparent',borderWidth:2,tension:0.4,pointRadius:2},
+    ]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{...tt,callbacks:{label:ctx=>' '+ctx.dataset.label+': $'+ctx.parsed.y.toLocaleString()+'/kg'}}},
+    scales:{
+      x:{grid:{color:'rgba(24,32,21,.7)'},ticks:{color:'#556050'}},
+      y:{grid:{color:'rgba(24,32,21,.7)'},ticks:{color:'#556050',callback:v=>'$'+v.toLocaleString()},min:2000,max:5000}
+    }
+  }
+});
+
+// Costo USD/kg res fría
+new Chart(document.getElementById('chartCostoUSD'),{
+  type:'bar',
+  data:{
+    labels:['Novillo\nfeedlot 400kg','Vaquillona\n370kg','Nov. Overo\n415kg','Vaca\nmanuf. 480kg','Toro\n580kg','Capón\n120kg'],
+    datasets:[{
+      label:'USD/kg res fría (animal+faena)',
+      data:[8.47,8.27,7.56,6.90,6.12,5.35],
+      backgroundColor:['rgba(39,174,96,.7)','rgba(46,204,113,.7)','rgba(243,156,18,.7)','rgba(231,76,60,.7)','rgba(231,76,60,.5)','rgba(155,89,182,.7)'],
+      borderWidth:0,borderRadius:4
+    }]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,indexAxis:'y',
+    plugins:{legend:{display:false},tooltip:{...tt,callbacks:{label:ctx=>' U$S '+ctx.parsed.x+'/kg res fría'}}},
+    scales:{
+      x:{grid:{color:'rgba(24,32,21,.7)'},ticks:{color:'#556050',callback:v=>'U$S '+v}},
+      y:{grid:{display:false},ticks:{color:'#556050',font:{size:8}}}
+    }
+  }
+});
+
+// Rinde carcasa
+new Chart(document.getElementById('chartRinde'),{
+  type:'bar',
+  data:{
+    labels:['Novillo feedlot','Vaquillona SP','Novillo Overo','Vaca Buena','Toro Bueno','Capón porcino'],
+    datasets:[{
+      label:'% rendimiento carcasa',
+      data:[59,57.5,57.5,52,60,79],
+      backgroundColor:['rgba(39,174,96,.7)','rgba(46,204,113,.7)','rgba(243,156,18,.7)','rgba(231,76,60,.7)','rgba(231,76,60,.5)','rgba(155,89,182,.7)'],
+      borderWidth:0,borderRadius:3
+    }]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{...tt,callbacks:{label:ctx=>' Rinde: '+ctx.parsed.y+'%'}}},
+    scales:{
+      x:{grid:{color:'rgba(24,32,21,.7)'},ticks:{color:'#556050',font:{size:8}}},
+      y:{grid:{color:'rgba(24,32,21,.7)'},ticks:{color:'#556050',callback:v=>v+'%'},min:40,max:90}
+    }
+  }
+});
+
+// Hacienda vs IPC
+new Chart(document.getElementById('chartVsIPC'),{
+  type:'line',
+  data:{
+    labels:meses,
+    datasets:[
+      {label:'Novillo feedlot',data:[100,106,111,117,123,127],borderColor:'rgba(39,174,96,.9)',backgroundColor:'rgba(39,174,96,.06)',borderWidth:2.5,fill:true,tension:0.4,pointRadius:3},
+      {label:'IPC INDEC',data:[100,102.9,105.8,109.4,112.2,114.9],borderColor:'rgba(231,76,60,.8)',backgroundColor:'transparent',borderWidth:2,borderDash:[4,3],tension:0.4,pointRadius:2},
+      {label:'Dólar BNA',data:[100,101,99.7,100.5,101.3,100.9],borderColor:'rgba(36,113,163,.7)',backgroundColor:'transparent',borderWidth:2,borderDash:[3,3],tension:0.4,pointRadius:2},
+    ]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{
+      legend:{display:true,position:'bottom',labels:{color:'#556050',font:{size:8},boxWidth:10,padding:8}},
+      tooltip:{...tt,callbacks:{label:ctx=>' '+ctx.dataset.label+': índice '+ctx.parsed.y}}
+    },
+    scales:{
+      x:{grid:{color:'rgba(24,32,21,.7)'},ticks:{color:'#556050'}},
+      y:{grid:{color:'rgba(24,32,21,.7)'},ticks:{color:'#556050'},min:95,max:135,
+        title:{display:true,text:'Base 100 = Ene 2026',color:'#3d5040',font:{size:8}}}
+    }
+  }
+});
+
+// Exportaciones
+new Chart(document.getElementById('chartExport'),{
+  type:'bar',
+  data:{
+    labels:['Ene-26','Feb-26','Mar-26','Abr-26','May-26*','Jun-26*','Jul-26*','Dic-26*'],
+    datasets:[
+      {label:'USD M',data:[321,360,388,321,340,350,360,370],backgroundColor:'rgba(192,57,43,.7)',borderWidth:0,borderRadius:3,yAxisID:'y'},
+      {label:'Miles Tn',data:[43.6,48,72,46.1,48,50,52,55],backgroundColor:'rgba(36,113,163,.4)',borderWidth:0,borderRadius:3,yAxisID:'y2'},
+    ]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{
+      legend:{display:true,position:'bottom',labels:{color:'#556050',font:{size:8},boxWidth:10,padding:8}},
+      tooltip:{...tt}
+    },
+    scales:{
+      x:{grid:{color:'rgba(24,32,21,.7)'},ticks:{color:'#556050'}},
+      y:{grid:{color:'rgba(24,32,21,.7)'},ticks:{color:'rgba(192,57,43,.8)',callback:v=>'$'+v+'M'},position:'left'},
+      y2:{grid:{display:false},ticks:{color:'rgba(36,113,163,.8)',callback:v=>v+'kTn'},position:'right'}
+    }
+  }
+});
+
+// Destinos exportación
+new Chart(document.getElementById('chartDestinos'),{
+  type:'doughnut',
+  data:{
+    labels:['China (61%)','EE.UU. (15%)','Unión Europea (9%)','Israel (5%)','Chile + otros (10%)'],
+    datasets:[{
+      data:[61,15,9,5,10],
+      backgroundColor:['rgba(192,57,43,.85)','rgba(36,113,163,.85)','rgba(39,174,96,.85)','rgba(232,184,75,.85)','rgba(80,80,100,.6)'],
+      borderColor:'#06080a',borderWidth:2
+    }]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,cutout:'55%',
+    plugins:{
+      legend:{display:true,position:'bottom',labels:{color:'#556050',font:{size:8},boxWidth:10,padding:6}},
+      tooltip:{...tt,callbacks:{label:ctx=>' '+ctx.label+': '+ctx.parsed+'%'}}
+    }
+  }
+});
+</script>
+</body>
+</html>
